@@ -22,8 +22,8 @@
 
     <ul class="lead">
         <p class="small">Kliknij w imię i nazwisko dziecka aby zobaczyć szczegóły.</p>
-        {% for child in childrens %}
-            <li><a href="/vax_plan/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>, dob: {{ child.date_of_birth }}, age: </li>
+        {% for child in children %}
+            <li><a href="/vax_plan/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>, dob: {{ child.date_of_birth }}, age: {{ child.age }} </li>
         {% endfor %}
 
     </ul>

@@ -8,13 +8,14 @@ from vax.models import Parent, Child
 class ParentIndexView(View):
     def get(self, request, parent_id):
         parent = Parent.objects.get(id=parent_id)
-        childrens = Child.objects.filter(parent=parent_id)
+        children = Child.objects.filter(parent=parent_id)
+
         return render(
             request,
             'parent/parent_index.html',
             {
                 'parent': parent,
-                'childrens': childrens
+                'children': children
             }
         )
 
@@ -25,4 +26,5 @@ class ParentCreateView(CreateView):
 
 class ChildIndexView(View):
     pass
+
 
