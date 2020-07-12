@@ -11,7 +11,7 @@ class ParentIndexView(View):
         childrens = Child.objects.filter(parent=parent_id)
         return render(
             request,
-            'parent/index.html',
+            'parent/parent_index.html',
             {
                 'parent': parent,
                 'childrens': childrens
@@ -22,4 +22,7 @@ class ParentCreateView(CreateView):
     model = Parent
     fields = ['name', 'surname', 'email']
     template_name = 'parent/parent_create.html'
+
+class ChildIndexView(View):
+    pass
 

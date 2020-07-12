@@ -17,11 +17,14 @@ from django.contrib import admin
 from django.urls import path
 
 from vax.views import ParentIndexView, ParentCreateView
+from vax.views import ChildIndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('parent/<int:parent_id>', ParentIndexView.as_view(), name='parent-index'),
     path('parent/create', ParentCreateView.as_view(), name='parent-create'),
+
+    path('child/<int:child_id>', ChildIndexView, name='child-index')
 
 ]
 

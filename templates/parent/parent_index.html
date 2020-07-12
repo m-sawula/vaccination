@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %} Lista dzieci {{ parent }} {% endblock %}
+
+
+
+{% block content %}
+
+    <div class="jumbotron py-2 px-4">
+        <h1 class="display-5">Lista zarejestrowanych dzieci</h1>
+        <p class="lead">Poniżej znajduje się lista dzieci zarejstowanych przez Ciebie w apliakcji SZCZEPIENIA.</p>
+        <hr class="my-4">
+        <p>
+            <span class="d-block mb-2">Możliwe czynności:</span>
+            <a class="btn btn-success" href="" role="button">Dodaj dziecko</a>
+            <a class="btn btn-success" href="" role="button">Edytuj dane dziecka</a>
+        </p>
+
+
+    <h2>Rodzic: {{ parent.name }} {{ parent.surname }}</h2>
+
+
+    <ul class="lead">
+        <p class="small">Kliknij w imię i nazwisko dziecka aby zobaczyć szczegóły.</p>
+        {% for child in childrens %}
+            <li><a href="/vax_plan/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>, dob: {{ child.date_of_birth }}, age: </li>
+        {% endfor %}
+
+    </ul>
+    </div>
+{% endblock %}
