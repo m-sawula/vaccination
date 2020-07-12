@@ -26,10 +26,6 @@ class Child(models.Model):
     def age(self):
         return int(datetime.now() - self.date_of_birth)
 
-    # expected_vax_date_7_y = models.DateField()
-    # vax_date_7_y = models.DateField()
-    # vax_name_7_y = models.CharField(max_length=64)
-    # symptom_after_vax_7_y = models.TextField()
 
 class ChildHealthReview(models.Model):
     NAME_CHILD_REVIEW = (
@@ -53,46 +49,46 @@ class ChildHealthReview(models.Model):
     remarks = models.TextField()
     child = models.ManyToManyField(Child)
 
-#
-# class VaxName(models.Model):
-#     """The model stores inoculation names only."""
-#     vax_name = models.CharField(max_length=64)
-#
-#
-# class VaxCycleName(models.Model):
-#     """The model stores vaccination cycle names only."""
-#     vax_cycle_name = models.CharField(max_length=64)
-#
-#
-# class VaxProgram(models.Model):
-#     """The model stores vaccination program names.
-#
-#     One program for year.
-#     """
-#     vax_program_name = models.CharField(max_length=64)
-#     year = models.IntegerField()
-#     child = models.ForeignKey(Child, on_delete=models.CASCADE)
-#
-#
-# class VaxCycle(models.Model):
-#     """The model stores vaccination cycle names.
-#
-#     For example: vaccination cycle for hepatitis B in 2005 year
-#     contains 3 inoculations (1th day, 2th, 7th month).
-#     """
-#     name = models.ForeignKey(VaxCycleName, on_delete=models.CASCADE)
-#     program = models.ForeignKey(VaxProgram, on_delete=models.CASCADE)
-#
-#
-# class Vax(models.Model):
-#     """The model stores information about the inoculation procedure.."""
-#     name = models.ForeignKey(VaxName, on_delete=models.CASCADE)
-#     exp_vax_date = models.DateField()
-#     vax_date = models.DateField(null=True)
-#     symptom_after_vax = models.TextField(null=True)
-#     vaxcycle = models.ForeignKey(VaxCycle, on_delete=models.CASCADE)
-#
-#
+
+class VaxName(models.Model):
+    """The model stores inoculation names only."""
+    vax_name = models.CharField(max_length=64)
+
+
+class VaxCycleName(models.Model):
+    """The model stores vaccination cycle names only."""
+    vax_cycle_name = models.CharField(max_length=64)
+
+
+class VaxProgram(models.Model):
+    """The model stores vaccination program names.
+
+    One program for year.
+    """
+    vax_program_name = models.CharField(max_length=64)
+    year = models.IntegerField()
+    child = models.ForeignKey(Child, on_delete=models.CASCADE)
+
+
+class VaxCycle(models.Model):
+    """The model stores vaccination cycle names.
+
+    For example: vaccination cycle for hepatitis B in 2005 year
+    contains 3 inoculations (1th day, 2th, 7th month).
+    """
+    name = models.ForeignKey(VaxCycleName, on_delete=models.CASCADE)
+    program = models.ForeignKey(VaxProgram, on_delete=models.CASCADE)
+
+
+class Vax(models.Model):
+    """The model stores information about the inoculation procedure.."""
+    name = models.ForeignKey(VaxName, on_delete=models.CASCADE)
+    exp_vax_date = models.DateField()
+    vax_date = models.DateField(null=True)
+    symptom_after_vax = models.TextField(null=True)
+    vaxcycle = models.ForeignKey(VaxCycle, on_delete=models.CASCADE)
+
+
 # """
 # # tworzenie programu na dany rok
 #
