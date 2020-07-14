@@ -12,10 +12,10 @@
 </head>
 <body>
 
-    <div class="jumbotron py-3 m-4">
+    <div class="jumbotron py-3  m-4">
 {#   blok nagłówka    #}
     {% block header %}
-        <h2>nazwa apliakcji</h2>
+        <h1 class="text-lg-center">MyVax</h1>
     {% endblock %}
 ​     </div>
 
@@ -25,7 +25,7 @@
 {#   W to miejsce szablonu bazowego będą wpadały dane z szblonów dziedziczących        #}
     {% endblock %}
     </div>
-    <div>
+    <div class="py-3 m-4" >
         {% block footer %}
          Aktualna data i godzina {{ now }} | wersja aplikacji: {{ version }}
         {% endblock %}

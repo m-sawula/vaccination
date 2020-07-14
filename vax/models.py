@@ -1,4 +1,7 @@
-from datetime import datetime
+from datetime import  date
+
+from django.contrib.auth.models import User
+from dateutil.relativedelta import relativedelta
 
 from django.db import models
 
@@ -24,8 +27,12 @@ class Child(models.Model):
 
     @property
     def age(self):
-        return int(datetime.now() - self.date_of_birth)
+        # zwraca wiek w latach,  trzeba doinstalować pip install python-dateutil
+        return relativedelta(date.today(), self.date_of_birth).years
+        # return (date.today() - self.date_of_birth).days  # zwraca wiek w dniach
 
+    def __str__(self):
+        return f'{self.surname} {self.name}, {self.age}-{self.id}-{self.parent_id}'
 
 class ChildHealthReview(models.Model):
     NAME_CHILD_REVIEW = (
@@ -54,10 +61,16 @@ class VaxName(models.Model):
     """The model stores inoculation names only."""
     vax_name = models.CharField(max_length=64)
 
+    def __str__(self):
+        return self.vax_name
+
 
 class VaxCycleName(models.Model):
     """The model stores vaccination cycle names only."""
     vax_cycle_name = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.vax_cycle_name
 
 
 class VaxProgram(models.Model):
@@ -69,6 +82,9 @@ class VaxProgram(models.Model):
     year = models.IntegerField()
     child = models.ForeignKey(Child, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.vax_program_name} | {self.year} | {self.child}'
+
 
 class VaxCycle(models.Model):
     """The model stores vaccination cycle names.
@@ -79,6 +95,9 @@ class VaxCycle(models.Model):
     name = models.ForeignKey(VaxCycleName, on_delete=models.CASCADE)
     program = models.ForeignKey(VaxProgram, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.name} | {self.program}'
+
 
 class Vax(models.Model):
     """The model stores information about the inoculation procedure.."""
@@ -87,6 +106,9 @@ class Vax(models.Model):
     vax_date = models.DateField(null=True)
     symptom_after_vax = models.TextField(null=True)
     vaxcycle = models.ForeignKey(VaxCycle, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name} | {self.exp_vax_date} | {self.vaxcycle}'
 
 
 # """
