@@ -10,67 +10,74 @@
         <p class="lead">Wybierz odpowiedni przycisk aby zobaczyć szczegóły.</p>
         <p class="lead font-weight-bold">{{ child.name }} {{ child.surname }}</p>
         <p>lat: {{ child.age }}, urodzona: {{ child.date_of_birth }}</p>
-
         <hr class="my-2">
-
         <span class= hidden></span>
-        <a class="btn btn-success" href="/" role="button">Lista dzieci</a>
+        <a class="btn btn-success" href="/" role="button">Powrót do listy dzieci</a>
     </div>
 
     <div class="jumbotron py-2 px-4">
         <h3 class="display-5">Bilanse zdrowia dziecka</h3>
-        <ul class="lead">
-            <p class="small">Tutaj będzie bilans zdrowia dziecka</p>
-{#            {% for child in children %}#}
-{#                <li>#}
-{#                    <a href="/vax_plan/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>#}
-{#                    , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.#}
-{#                </li>#}
-{#            {% endfor %}#}
-        </ul>
-        <hr class="my-2">
         <span class= hidden></span>
-        <a class="btn btn-success" href="" role="button">Pokarz szczegóły</a>
+        <a id="btn-1" class="btn btn-success" href="" role="button">Ukryj szczegóły</a>
+        <a id="btn-2" class="btn btn-success" href="" role="button">Pokaż szczegóły</a>
+{# to jest div do ukrywania i odkrywania danych o bilansach zdrowia #}
+        <div id="div-1">
+            <hr class="my-2">
+            <ul class="lead">
+                <p class="small">Tutaj będzie bilans zdrowia dziecka</p>
+    {#            {% for child in children %}#}
+    {#                <li>#}
+    {#                    <a href="/vax_plan/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>#}
+    {#                    , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.#}
+    {#                </li>#}
+    {#            {% endfor %}#}
+            </ul>
+        </div>
+
     </div>
 
     <div class="jumbotron py-2 px-4">
         <h3 class="display-5">Lista szczepień dziecka</h3>
-
-        <ul class="lead">
-            {% for item in vax_program %}
-                <li>
-                {{ item.vax_program_name }} <br>
-                </li>
-            {% empty %}
-                {{ "To dziecko nie ma jeszcze dodanego programu szczepień." }}
-            {% endfor %}
-        </ul>
-        <hr class="my-2">
-        <ul class="lead">
-            {% for item in vax_cycles %}
-                <li>
-                {{ item.name }} <br>
-                </li>
-            {% empty %}
-                {{ "To dziecko nie ma jeszcze dodanych cykli szczepień." }}
-            {% endfor %}
-        </ul>
-         <hr class="my-2">
-        <ul class="lead">
-            {% for item in vaxes %}
-{#                {{ item.vaxcycle.name }}#}
-                <li class="m-2">
-                {{ item.name }} <br>
-                oczekiwana data wykonania szczepienia: {{ item.exp_vax_date|date:"SHORT_DATE_FORMAT" }}<br>
-                data wykonania szczepienia: {{ item.vax_date|date:"SHORT_DATE_FORMAT" }}<br>
-                obserwacje po szczepieniu: {{ item.symptom_after_vax }}
-                </li>
-            {% empty %}
-                {{ "To dziecko nie ma jeszcze dodanych szczepień." }}
-            {% endfor %}
-        </ul>
-        <hr class="my-2">
         <span class= hidden></span>
-        <a class="btn btn-success" href="" role="button">Pokarz szczegóły</a>
+        <a id="btn-3" class="btn btn-success" href="" role="button">Ukryj szczegóły</a>
+        <a id="btn-4" class="btn btn-success" href="" role="button">Pokaż szczegóły</a>
+{# to jest div do ukrywania i odkrywania danych o bilansach szczepiebuacg #}
+        <div id="div-2">
+            <hr class="my-2">
+            <ul class="lead">
+                {% for item in vax_program %}
+                    <li>
+                    {{ item.vax_program_name }} <br>
+                    </li>
+                {% empty %}
+                    {{ "To dziecko nie ma jeszcze dodanego programu szczepień." }}
+                {% endfor %}
+            </ul>
+            <hr class="my-2">
+            <ul class="lead">
+                {% for item in vax_cycles %}
+                    <li>
+                    {{ item.name }} <br>
+                    </li>
+                {% empty %}
+                    {{ "To dziecko nie ma jeszcze dodanych cykli szczepień." }}
+                {% endfor %}
+            </ul>
+            <hr class="my-2">
+            <ul class="lead">
+                {% for item in vaxes %}
+    {#                {{ item.vaxcycle.name }}#}
+                    <li class="m-2">
+                    {{ item.name }} <br>
+                    oczekiwana data wykonania szczepienia: {{ item.exp_vax_date|date:"SHORT_DATE_FORMAT" }}<br>
+                    data wykonania szczepienia: {{ item.vax_date|date:"SHORT_DATE_FORMAT" }}<br>
+                    obserwacje po szczepieniu: {{ item.symptom_after_vax }}
+                    </li>
+                {% empty %}
+                    {{ "To dziecko nie ma jeszcze dodanych szczepień." }}
+                {% endfor %}
+            </ul>
+        </div>
+
     </div>
 {% endblock %}
