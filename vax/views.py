@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import View
 
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
 from vax.models import Parent, Child, ChildHealthReview, VaxProgram, VaxCycle, Vax
 
@@ -52,4 +53,9 @@ class ChildIndexView(View):
             }
         )
 
-
+class VaxUpdateView(UpdateView):
+    pass
+#     model = Vax
+#     fields = ['vax_date', 'symptom_after_vax']
+#     template_name = 'vax/vax_update.html'
+#     success_url = reverse_lazy('child-index/{child_id}')

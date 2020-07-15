@@ -14,14 +14,23 @@ class VaxCycleName(admin.ModelAdmin):
 
 @admin.register(VaxProgram)
 class VaxProgram(admin.ModelAdmin):
-    pass
+    list_display = ('vax_program_name', 'year', 'child')
 
 @admin.register(VaxCycle)
 class VaxCycle(admin.ModelAdmin):
-    pass
+    # tu wpisujemy pola z modelu, które chcemy wyświetlać w adminie
+    list_display = ('name', 'program')
 
 @admin.register(Vax)
 class Vax(admin.ModelAdmin):
-    pass
+    list_display = (
+        'name',
+        'exp_vax_date',
+        'vax_date',
+        'symptom_after_vax',
+        'vaxcycle'
+    )
+    # tu wpisuemy pola które, będą zablokowane do edycji w adminie
+    exclude = ['exp_vax_date']
 
 # Register your models here.

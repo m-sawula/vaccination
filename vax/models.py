@@ -11,6 +11,7 @@ class Parent(models.Model):
     surname = models.CharField(max_length=64)
     email = models.CharField(max_length=64)
     create_date = models.DateTimeField(auto_now_add=True)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Child(models.Model):
@@ -101,11 +102,27 @@ class VaxCycle(models.Model):
 
 class Vax(models.Model):
     """The model stores information about the inoculation procedure.."""
-    name = models.ForeignKey(VaxName, on_delete=models.CASCADE)
-    exp_vax_date = models.DateField()
-    vax_date = models.DateField(null=True)
-    symptom_after_vax = models.TextField(null=True)
-    vaxcycle = models.ForeignKey(VaxCycle, on_delete=models.CASCADE)
+    name = models.ForeignKey(
+        VaxName,
+        on_delete=models.CASCADE,
+        verbose_name='Nazwa szczepienia',
+    )
+    exp_vax_date = models.DateField(
+        verbose_name='Wymagana data wykonania szczepenia'
+    )
+    vax_date = models.DateField(
+        verbose_name='Data wykonania szczepienia',
+        null=True
+    )
+    symptom_after_vax = models.TextField(
+        verbose_name='Obserwacje po szczepieniu'
+        , null=True
+    )
+    vaxcycle = models.ForeignKey(
+        VaxCycle,
+        on_delete=models.CASCADE,
+        verbose_name='Cykl dla szczepionki'
+    )
 
     def __str__(self):
         return f'{self.name} | {self.exp_vax_date} | {self.vaxcycle}'
