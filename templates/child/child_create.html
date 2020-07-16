@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Child create {% endblock %}
+
+{% block content %}
+
+    <div class="jumbotron py-2 px-4" >
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button class="btn btn-success" type="submit">Dodaj</button>
+    </form>
+
+    </div>
+
+{% endblock %}

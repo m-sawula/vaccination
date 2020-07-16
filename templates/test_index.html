@@ -4,7 +4,8 @@
 
 {% block content %}
 <div class="jumbotron">
-    <h1 class="display-4">Witaj w panelu administracyjnym</h1>
+    <h1 class="display-4">Witaj w aplikacji MyVax</h1>
+    <a href="/parent/{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</a>
     <p class="lead">Z poziomu tego miejsca, będziesz mógł zarządzać utworami, albumami oraz wykonawcami. Dodatkowo w łatwy sposób sprawdzisz zgłoszenia konkursowe.</p>
     <hr class="my-4">
     <p>Zarządzanie użytkownikami, znajduje się w panelu administracyjnym.</p>

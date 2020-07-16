@@ -12,8 +12,8 @@
 </head>
 <body>
     <div class="jumbotron py-2 m-4">
-        <span>Użytkownik: {{ user }}</span>
-        <a href="{% url 'logout' %}">wyloguj</a>
+        <span>Użytkownik: {{ user.username }}</span>
+        <a href="{% url 'logout' %}">WYLOGUJ</a>
 
     </div>
 

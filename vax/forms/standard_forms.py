@@ -16,4 +16,15 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
+
+
+class ChildForm(forms.Form):
+    name = forms.CharField(label="First name", required=False)
+    surname = forms.CharField(label="Last name", required=False)
+    # band_name = forms.CharField(label="Band name")
+    birth_date = forms.DateField(
+        label="Birth date",
+        required=False,
+        input_formats=['%d/%m/%Y']
+    )

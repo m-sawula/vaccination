@@ -1,5 +1,5 @@
 from datetime import datetime
-from vax.models import User
+from django.contrib.auth.models import User
 
 def date_and_version(request):
     ctx = {
@@ -8,8 +8,8 @@ def date_and_version(request):
     }
     return ctx
 
-def current_user(request, user_id):
-    user = User.objects.get(id=user_id)
-    ctx = {
-        "user": user.username
-    }
+def current_user(request):
+    user = request.user
+    if request.user.is_authenticated:
+        return {"user": user}
+

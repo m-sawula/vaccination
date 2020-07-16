@@ -6,11 +6,11 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 
-from vax.models import Parent, Child, ChildHealthReview, VaxProgram, VaxCycle, Vax
+from vax.models import User, Parent, Child, ChildHealthReview, VaxProgram, VaxCycle, Vax
 
 from django.views.generic import CreateView, UpdateView
 
-from vax.forms.standard_forms import LoginForm, SignUpForm
+from vax.forms.standard_forms import LoginForm, SignUpForm, ChildForm
 
 
 class MainIndexView(View):
@@ -23,7 +23,8 @@ class MainIndexView(View):
 # logowanie do panelu, oddzielny wdok z pominięciem wbudowanego widoku django
 class LoginView(View):
     def get(self, request):
-        # jeżeli user.id nie jest None przekieruj na stronę główną palikacji
+        # poniższy kod sprawdza czy koś jest aktualnie zlogowany
+        # jeżeli request.user.id (id aktualnie zalogowanego użytkownika) nie jest None
         if request.user.id is not None:
             return redirect('test')
         # w innym przypadku wyświetl formularz logowania
@@ -52,7 +53,7 @@ class LoginView(View):
         if user is None:
             # jeżeli user jest None wyświetl komunikat
             messages.add_message(request, messages.WARNING, 'User does not exist in database!')
-            # przekieruj na stronę logowania
+            # przekieruj na stronę główną aplikacji
             return redirect('myvax')
         # w innym przypadku utwórz sesje dla user
         login(request, user)  # session file aclass MainIndexView(View):nd cookie
@@ -81,16 +82,16 @@ def signup(request):
     return render(request, 'auth/signup.html', {'form': form})
 
 # testowa strona dla ZALOGOWANYCH
-class TestIndexView(View):
+class TestIndexView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "test_index.html")
 
-class ParentIndexView(View):
+class ParentIndexView(LoginRequiredMixin, View):
     """Wyświetla rodzica oraz dzieci które zarejestrował"""
 
     def get(self, request, parent_id):
-        parent = Parent.objects.get(id=parent_id)
-        children = Child.objects.filter(parent=parent_id)
+        parent = Parent.objects.get(pk=parent_id)
+        children = Child.objects.filter(parent_id=parent_id)
 
         return render(
             request,
@@ -102,14 +103,14 @@ class ParentIndexView(View):
         )
 
 
-class ParentCreateView(CreateView):
+class ParentCreateView(LoginRequiredMixin, CreateView):
     """Dodaje rodzica"""
     model = Parent
     fields = ['name', 'surname', 'email']
     template_name = 'parent/parent_create.html'
 
 
-class ChildIndexView(View):
+class ChildIndexView(LoginRequiredMixin, View):
     """Wyświetal dane dziecka, bilans zdrowia, infor o szczepieniach"""
 
     def get(self, request, child_id):
@@ -131,8 +132,37 @@ class ChildIndexView(View):
             }
         )
 
+class ChildCreateView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = ChildForm
+        return render(
+            request,
+            "child/child_create.html",
+            {"form": form}
+        )
 
-class VaxUpdateView(UpdateView):
+    def post(self, request):
+        form = ChildForm(request.POST)
+        # Parent jest OneToOneField do User
+        # tu pobierany jest rodzic który ma user_id=id aktualnie
+        # zalogowanego User-a
+        parent = Parent.objects.get(user_id=request.user.id)
+        if not form.is_valid():
+            return render(
+                request,
+                "child/child_create.html",
+                {"form": form}
+            )
+        Child.objects.create(
+            name=form.cleaned_data['name'],
+            surname=form.cleaned_data['surname'],
+            date_of_birth=form.cleaned_data['date_of_birth'],
+            parent=parent.id
+        )
+        return redirect('parent-index')
+
+
+class VaxUpdateView(LoginRequiredMixin, UpdateView):
     pass
 #     model = Vax
 #     fields = ['vax_date', 'symptom_after_vax']
