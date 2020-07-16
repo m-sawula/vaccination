@@ -4,14 +4,22 @@ from django.contrib.auth.models import User
 from dateutil.relativedelta import relativedelta
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Parent(models.Model):
-    name = models.CharField(max_length=64)
-    surname = models.CharField(max_length=64)
-    email = models.CharField(max_length=64)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     first_name = models.CharField(max_length=64)
+#     last_nane = models.CharField(max_length=64)
+#     email = models.CharField(max_length=64)
     create_date = models.DateTimeField(auto_now_add=True)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+#
+# @receiver(post_save, sender=User)
+# def update_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Parent.objects.create(user=instance)
+#     instance.parent.save()
 
 
 class Child(models.Model):

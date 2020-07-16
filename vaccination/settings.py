@@ -120,6 +120,8 @@ STATIC_URL = '/static/'
 
 LOGIN_URL = '/login'
 
+LOGIN_REDIRECT_URL = 'parent-index'
+
 try:
     from vaccination.local_settings import DATABASES
 except ModuleNotFoundError:

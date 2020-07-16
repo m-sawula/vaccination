@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from vax.views import MainIndexView
+from vax.views import MainIndexView, LoginView, logout_view, signup, TestIndexView
 from vax.views import ParentIndexView, ParentCreateView
 from vax.views import ChildIndexView
 from vax.views import VaxUpdateView
@@ -25,6 +25,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('myvax', MainIndexView.as_view(), name='myvax'),
+    path('dupa/', TestIndexView.as_view(), name='dupa'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('signup/', signup, name='signup'),
+
 
     path('parent/<int:parent_id>', ParentIndexView.as_view(), name='parent-index'),
     path('parent/create', ParentCreateView.as_view(), name='parent-create'),
