@@ -11,34 +11,39 @@
 
 </head>
 <body>
-    <div class="jumbotron py-2 m-4">
-        <span>Użytkownik: {{ user.username }}</span>
-        <a href="{% url 'logout' %}">WYLOGUJ</a>
+<div class="jumbotron py-2 m-4">
+    <span>Witaj: {{ user.username }} ||</span>
+    <a href="{% url 'logout' %}">wyloguj się</a>
 
-    </div>
+</div>
 
-    <div class="jumbotron py-3  m-4">
-{#   blok nagłówka    #}
+<div class="jumbotron py-3  m-4">
+    {#   blok nagłówka    #}
     {% block header %}
         <h1 class="text-lg-center">MyVax</h1>
     {% endblock %}
-​     </div>
+</div>
 
-    <div class="m-4">
-{#   blok zawartości    #}
+<div class="m-4">
+    {#    poniżej jest inkludowana funkcjonalność wyświetlająca messages    #}
+    {#    kod mieszka temaplates / partials / messages.html    #}
+    <div class="col-12">
+        {% include "partials/messages.html" %}
+    </div>
+    {#   blok zawartości    #}
     {% block content %}
-{#   W to miejsce szablonu bazowego będą wpadały dane z szblonów dziedziczących        #}
+        {#   W to miejsce szablonu bazowego będą wpadały dane z szblonów dziedziczących    #}
     {% endblock %}
-    </div>
-    <div class="py-3 m-4" >
-        {% block footer %}
-         Aktualna data i godzina {{ now }} | wersja aplikacji: {{ version }}
-        {% endblock %}
-    </div>
+</div>
+<div class="py-3 m-4">
+    {% block footer %}
+        Aktualna data i godzina {{ now }} | wersja aplikacji: {{ version }}
+    {% endblock %}
+</div>
 
-    <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}" ></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/my_script.js' %}" ></script>
+<script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/my_script.js' %}"></script>
 </body>
 </html>

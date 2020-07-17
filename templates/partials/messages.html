@@ -1,0 +1,13 @@
+{#kod do wyświetlania wiadomości#}
+{#trzeba go zainkludować w szablonie tam gdzie ma być wyświetlana wiadomość#}
+
+{#    <div class="col-12">#}
+{#        {% include "partials/messages.html" %}#}
+{#    </div>#}
+
+
+{% if messages %}
+    {% for message in messages %}
+        <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+    {% endfor %}
+{% endif %}
