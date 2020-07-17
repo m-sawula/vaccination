@@ -1,17 +1,16 @@
+from django.db import models
 from datetime import  date
-
 from django.contrib.auth.models import User
 from dateutil.relativedelta import relativedelta
-
-from django.db import models
+from django_auto_one_to_one import AutoOneToOneModel
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-class Parent(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     first_name = models.CharField(max_length=64)
-#     last_nane = models.CharField(max_length=64)
+class Parent(AutoOneToOneModel(User)):
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=64, null=True)
+    last_name = models.CharField(max_length=64, null=True)
 #     email = models.CharField(max_length=64)
     create_date = models.DateTimeField(auto_now_add=True)
 #

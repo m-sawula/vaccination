@@ -1,34 +1,44 @@
 {% extends 'base.html' %}
 
-{% block title %} Lista dzieci {% endblock %}
+{% block title %} Parent index {% endblock %}
 
 
 
 {% block content %}
 
-    <div class="jumbotron py-2 px-4">
-        <h3 class="display-5">Lista zarejestrowanych dzieci</h3>
-        <p class="lead">Poniżej znajduje się lista dzieci zarejstowanych przez Ciebie w apliakcji.</p>
+    <div class="jumbotron">
+        <h3 class="display-5">Witaj w aplikacji MyVax</h3>
+        <h3 class="display-5">{{ user.first_name }} {{ user.last_name }}</h3>
+        <br>
+        <a href="/parent/update/{{ user.id }}">Kliknij tutaj i zaktualizuj dane rodzica.</a>
+        <p class="lead">Z poziomu tego miejsca, będziesz mógł rejestrować dzieci w aplikacji.</p>
         <hr class="my-4">
-        <p>
-            <span class="d-block mb-2">Możliwe czynności:</span>
-            <a class="btn btn-success" href="" role="button">Dodaj dziecko</a>
-            <a class="btn btn-success" href="" role="button">Edytuj dane dziecka</a>
-        </p>
-
-
-    <h2>Rodzic: {{ parent.name }} {{ parent.surname }}</h2>
-
-
-    <ul class="lead">
-        <p class="small">Kliknij w imię i nazwisko dziecka, aby zobaczyć szczegóły.</p>
-        {% for child in children %}
-            <li>
-                <a href="/child/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>
-                , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.
-            </li>
-        {% endfor %}
-
-    </ul>
+        miejsce na buttony
     </div>
+
+{#    <div class="jumbotron py-2 px-4">#}
+{#        <h3 class="display-5">Lista zarejestrowanych dzieci</h3>#}
+{#        <p class="lead">Poniżej znajduje się lista dzieci zarejstowanych przez Ciebie w apliakcji.</p>#}
+{#        <hr class="my-4">#}
+{#        <p>#}
+{#            <span class="d-block mb-2">Możliwe czynności:</span>#}
+{#            <a class="btn btn-success" href="" role="button">Dodaj dziecko</a>#}
+{#            <a class="btn btn-success" href="" role="button">Edytuj dane dziecka</a>#}
+{#        </p>#}
+{##}
+{##}
+{#        <h2>Rodzic: {{ parent.name }} {{ parent.surname }}</h2>#}
+{##}
+{##}
+{#        <ul class="lead">#}
+{#            <p class="small">Kliknij w imię i nazwisko dziecka, aby zobaczyć szczegóły.</p>#}
+{#            {% for child in children %}#}
+{#                <li>#}
+{#                    <a href="/child/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>#}
+{#                    , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.#}
+{#                </li>#}
+{#            {% endfor %}#}
+{##}
+{#        </ul>#}
+{#    </div>#}
 {% endblock %}

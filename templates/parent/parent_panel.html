@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %} Parent panel {% endblock %}
+
+
+
+{% block content %}
+
+{#    <div class="jumbotron">#}
+{#        <h3 class="display-5">Witaj w aplikacji MyVax</h3>#}
+{#        <a href="/parent/{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</a>#}
+{#        <p class="lead">Z poziomu tego miejsca, będziesz mógł rejestrować dzieci w aplikacji.</p>#}
+{#        <hr class="my-4">#}
+{#    </div>#}
+
+    <div class="jumbotron py-2 px-4">
+        <h3 class="display-5">Lista zarejestrowanych dzieci</h3>
+        <p class="lead">Poniżej znajduje się lista dzieci zarejstowanych przez Ciebie w apliakcji.</p>
+        <hr class="my-4">
+        <p>
+            <span class="d-block mb-2">Możliwe czynności:</span>
+            <a class="btn btn-success" href="" role="button">Dodaj dziecko</a>
+            <a class="btn btn-success" href="" role="button">Edytuj dane dziecka</a>
+        </p>
+
+
+        <h2>Rodzic: {{ parent.first_name }} {{ parent.last_name }}</h2>
+
+
+        <ul class="lead">
+            <p class="small">Kliknij w imię i nazwisko dziecka, aby zobaczyć szczegóły.</p>
+            {% for child in children %}
+                <li>
+                    <a href="/child/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>
+                    , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.
+                </li>
+            {% empty %}
+                <p>Żedne dziecko nie zosłało jeszcze przez Ciebie zarejestrowane</p>
+                <p>Wybierz przycisk "Dodaj dziecko"</p>
+            {% endfor %}
+
+        </ul>
+    </div>
+{% endblock %}

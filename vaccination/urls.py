@@ -16,23 +16,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from vax.views import MainIndexView, LoginView, logout_view, signup, TestIndexView
-from vax.views import ParentIndexView, ParentCreateView
+from vax.views import MainIndexView, LoginView, logout_view, signup
+from vax.views import ParentIndexView, ParentPanelView, ParentUpdateView
 from vax.views import ChildIndexView, ChildCreateView
-from vax.views import VaxUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('myvax', MainIndexView.as_view(), name='myvax'),
-    path('test/', TestIndexView.as_view(), name='test'),
+    # path('test/', TestIndexView.as_view(), name='test'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', logout_view, name='logout'),
     path('signup/', signup, name='signup'),
 
 
-    path('parent/<int:parent_id>', ParentIndexView.as_view(), name='parent-index'),
-    path('parent/create', ParentCreateView.as_view(), name='parent-create'),
+    path('parent/', ParentIndexView.as_view(), name='parent-index'),
+    path('paren/panel/<int:user_id>', ParentPanelView.as_view(), name='parent-panel'),
+    path('parent/update/<int:user_id>', ParentUpdateView.as_view(), name='parent-update'),
 
     path('child/<int:child_id>', ChildIndexView.as_view(), name='child-index'),
     path('child_create', ChildCreateView.as_view(), name='child-create'),

@@ -11,6 +11,7 @@ from vax.models import User, Parent, Child, ChildHealthReview, VaxProgram, VaxCy
 from django.views.generic import CreateView, UpdateView
 
 from vax.forms.standard_forms import LoginForm, SignUpForm, ChildForm
+from vax.forms.model_forms import ParentForm
 
 
 class MainIndexView(View):
@@ -26,7 +27,7 @@ class LoginView(View):
         # poniższy kod sprawdza czy koś jest aktualnie zlogowany
         # jeżeli request.user.id (id aktualnie zalogowanego użytkownika) nie jest None
         if request.user.id is not None:
-            return redirect('test')
+            return redirect('parent-index')
         # w innym przypadku wyświetl formularz logowania
         return render(
             request,
@@ -60,12 +61,14 @@ class LoginView(View):
         # wyświetl wiadomość
         messages.add_message(request, messages.SUCCESS, 'User logged in successfully')
         # przekieruj na stronę
-        return redirect('test')
+        return redirect('parent-index')
+
 
 @login_required
 def logout_view(request):
     logout(request)
     return redirect('myvax')
+
 
 def signup(request):
     if request.method == 'POST':
@@ -76,26 +79,34 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('login')
+            messages.add_message(request, messages.SUCCESS, 'User created successfully')
+            return redirect('parent-index')
     else:
         form = SignUpForm()
     return render(request, 'auth/signup.html', {'form': form})
 
+
 # testowa strona dla ZALOGOWANYCH
-class TestIndexView(LoginRequiredMixin, View):
-    def get(self, request):
-        return render(request, "test_index.html")
-
 class ParentIndexView(LoginRequiredMixin, View):
-    """Wyświetla rodzica oraz dzieci które zarejestrował"""
+    def get(self, request):
+        return render(request, "parent/parent_index.html")
 
-    def get(self, request, parent_id):
-        parent = Parent.objects.get(pk=parent_id)
-        children = Child.objects.filter(parent_id=parent_id)
+
+class ParentPanelView(LoginRequiredMixin, View):
+    """Wyświetla rodzica oraz dzieci które zarejestrował.
+
+    Parent jest obiektem który jest tworzony automatycznie
+    podczas rejestrancj użytkownika. Po zarejestrowaniu rodzic
+    musi zaktualizować swoje imie i nazwisko.
+    """
+
+    def get(self, request, user_id):
+        parent = Parent.objects.get(pk=user_id)
+        children = Child.objects.filter(parent_id=user_id)
 
         return render(
             request,
-            'parent/parent_index.html',
+            'parent/parent_panel.html',
             {
                 'parent': parent,
                 'children': children
@@ -103,11 +114,41 @@ class ParentIndexView(LoginRequiredMixin, View):
         )
 
 
-class ParentCreateView(LoginRequiredMixin, CreateView):
-    """Dodaje rodzica"""
-    model = Parent
-    fields = ['name', 'surname', 'email']
-    template_name = 'parent/parent_create.html'
+# class ParentUpdateView(LoginRequiredMixin, UpdateView):
+#     """Ktualizuje dane rodzica stwordzonego automatycznie podczas twordzenia urzytkowniak rodzica"""
+#     model = Parent
+#     fields = ['first_name', 'last_name']
+#     template_name = 'parent/parent_update.html'
+#     success_url = reverse_lazy('parent-panel/{user_id}')
+
+class ParentUpdateView(LoginRequiredMixin, View):
+    def get(self, request, user_id):
+        # user = request.user
+        parent = Parent.objects.get(user_id=user_id)
+        form = ParentForm(instance=parent)
+        return render(request,
+                      'parent/parent_update.html', {
+                          "form": form,
+                          "parent": parent
+                      }
+                      )
+
+    def post(self, request, user_id):
+        parent = Parent.objects.get(user_id=user_id)
+        form = ParentForm(request.POST, instance=parent)
+        if not form.is_valid():
+            return render(request,
+                          'parent/parent_update.html', {
+                              "form": form,
+                              "parent": parent
+                          }
+                          )
+
+        parent.first_name = form.cleaned_data['first_name']
+        parent.last_name = form.cleaned_data['last_name']
+        parent.save()
+        # przekierowuje na stronę parent panel zalogowanego użytkownika
+        return redirect('parent-panel', user_id)
 
 
 class ChildIndexView(LoginRequiredMixin, View):
@@ -131,6 +172,7 @@ class ChildIndexView(LoginRequiredMixin, View):
                 'vaxes': vaxes
             }
         )
+
 
 class ChildCreateView(LoginRequiredMixin, View):
     def get(self, request):
