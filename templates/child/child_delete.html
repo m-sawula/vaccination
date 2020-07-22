@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+​
+{% block title %}Child delete{% endblock %}
+
+{% block content %}
+<div class="jumbotron py-2 px-4">
+    <h3 class="display-5">Usuwanie danych dziecka</h3>
+    <hr class="my-2">
+    <a class="btn btn-info" href="{% url 'parent-panel' parent %}" role="button">Wróć do panelu rodzica</a>
+</div>
+
+<div>
+{#generyki wymagają pk od wesjic 3 Django#}
+{#generyki wymagają pk od wesjic 3 Django#}
+    <form method="POST" action="{% url 'child-delete' child.id %}" class="form">
+        {% csrf_token %}
+        Czy na pewno chcesz usunąć dane dziecka: {{ child.first_name }} {{ child.last_name }}, data urodzenia: {{ child.date_of_birth }} ?
+    <button type="submit" class="btn btn-danger">Usuń</button>
+    </form>
+</div>
+
+{% endblock %}

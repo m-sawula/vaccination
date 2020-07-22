@@ -228,10 +228,14 @@ class ChildUpdateView(LoginRequiredMixin, View):
 
 class ChildDeleteViev(LoginRequiredMixin, View):
     def get(self, request, child_id):
+        parent = request.user.id
         child = Child.objects.get(id=child_id)
-        if child:
-            child.delete()
-            return redirect('parent-panel', request.user.id)
+        return render(request, 'child/child_delete.html', {"child": child, "parent": parent})
+
+    def post(self, request, child_id):
+        child = Child.objects.get(id=child_id)
+        child.delete()
+        messages.add_message(request, messages.SUCCESS, 'Dane dziecka zostały usunięte z bazy')
         return redirect('parent-panel', request.user.id)
 
 class VaxUpdateView(LoginRequiredMixin, UpdateView):
