@@ -26,9 +26,9 @@ class Child(models.Model):
         ("M", "male"),
         ("F", "female")
     )
-    name = models.CharField(max_length=64)
-    surname = models.CharField(max_length=64)
-    date_of_birth = models.DateField()
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
+    date_of_birth = models.DateField(help_text='yyyy-mm-dd')
     sex = models.CharField(max_length=1, choices=SEX)
     parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -40,7 +40,7 @@ class Child(models.Model):
         # return (date.today() - self.date_of_birth).days  # zwraca wiek w dniach
 
     def __str__(self):
-        return f'{self.surname} {self.name}, {self.age}-{self.id}-{self.parent_id}'
+        return f'{self.last_name} {self.first_name}, {self.age}-{self.id}-{self.parent_id}'
 
 class ChildHealthReview(models.Model):
     NAME_CHILD_REVIEW = (

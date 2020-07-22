@@ -10,10 +10,12 @@
         <h3 class="display-5">Witaj w aplikacji MyVax</h3>
         <h3 class="display-5">{{ user.first_name }} {{ user.last_name }}</h3>
         <br>
-        <a href="/parent/update/{{ user.id }}">Kliknij tutaj i zaktualizuj dane rodzica.</a>
+        <a href="/parent/update/{{ user.id }}">Zaktualizuj swoje dane.</a>
+        <br>
+        <a href="/parent/panel/{{ user.id }}">Lista zarejestrowanych dzieci.</a>
         <p class="lead">Z poziomu tego miejsca, będziesz mógł rejestrować dzieci w aplikacji.</p>
         <hr class="my-4">
-        miejsce na buttony
+{#        <button href="{% url 'parent-panel' user_id %}" class="btn btn-success" type="submit">Przejdź do listy dzieci</button>#}
     </div>
 
 {#    <div class="jumbotron py-2 px-4">#}

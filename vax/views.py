@@ -10,8 +10,8 @@ from vax.models import User, Parent, Child, ChildHealthReview, VaxProgram, VaxCy
 
 from django.views.generic import CreateView, UpdateView
 
-from vax.forms.standard_forms import LoginForm, SignUpForm, ChildForm
-from vax.forms.model_forms import ParentForm
+from vax.forms.standard_forms import LoginForm, SignUpForm
+from vax.forms.model_forms import ParentForm, ChildForm
 
 
 class MainIndexView(View):
@@ -80,7 +80,7 @@ def signup(request):
             user = authenticate(username=username, password=raw_password)
             login(request, user)
             messages.add_message(request, messages.SUCCESS, 'User created successfully')
-            return redirect('parent-index')
+            return redirect('child-index')
     else:
         form = SignUpForm()
     return render(request, 'auth/signup.html', {'form': form})
@@ -114,13 +114,6 @@ class ParentPanelView(LoginRequiredMixin, View):
         )
 
 
-# class ParentUpdateView(LoginRequiredMixin, UpdateView):
-#     """Ktualizuje dane rodzica stwordzonego automatycznie podczas twordzenia urzytkowniak rodzica"""
-#     model = Parent
-#     fields = ['first_name', 'last_name']
-#     template_name = 'parent/parent_update.html'
-#     success_url = reverse_lazy('parent-panel/{user_id}')
-
 class ParentUpdateView(LoginRequiredMixin, View):
     def get(self, request, user_id):
         # user = request.user
@@ -147,7 +140,7 @@ class ParentUpdateView(LoginRequiredMixin, View):
         parent.first_name = form.cleaned_data['first_name']
         parent.last_name = form.cleaned_data['last_name']
         parent.save()
-        # przekierowuje na stronę parent panel zalogowanego użytkownika
+        # przekierowuje na stronę child panel zalogowanego użytkownika
         return redirect('parent-panel', user_id)
 
 
@@ -185,10 +178,6 @@ class ChildCreateView(LoginRequiredMixin, View):
 
     def post(self, request):
         form = ChildForm(request.POST)
-        # Parent jest OneToOneField do User
-        # tu pobierany jest rodzic który ma user_id=id aktualnie
-        # zalogowanego User-a
-        parent = Parent.objects.get(user_id=request.user.id)
         if not form.is_valid():
             return render(
                 request,
@@ -196,13 +185,54 @@ class ChildCreateView(LoginRequiredMixin, View):
                 {"form": form}
             )
         Child.objects.create(
-            name=form.cleaned_data['name'],
-            surname=form.cleaned_data['surname'],
+            first_name=form.cleaned_data['first_name'],
+            last_name=form.cleaned_data['last_name'],
             date_of_birth=form.cleaned_data['date_of_birth'],
-            parent=parent.id
+            sex=form.cleaned_data['sex'],
+            # Child.parent_id = Parent.user_id
+            parent_id=request.user.id
         )
-        return redirect('parent-index')
+        return redirect('parent-panel', request.user.id)
 
+
+
+class ChildUpdateView(LoginRequiredMixin, View):
+    def get(self, request, child_id):
+        child = Child.objects.get(id=child_id)
+        form = ChildForm(instance=child)
+        return render(request,
+                      'child/child_update.html', {
+                          "form": form,
+                          "child": child
+                      }
+                      )
+
+    def post(self, request, child_id):
+        child = Child.objects.get(id=child_id)
+        form = ChildForm(request.POST, instance=child)
+        if not form.is_valid():
+            return render(request,
+                          'child/child_update.html', {
+                              "form": form,
+                              "child": child
+                          }
+                          )
+
+        child.first_name = form.cleaned_data['first_name']
+        child.last_name = form.cleaned_data['last_name']
+        child.sex = form.cleaned_data['sex']
+        child.date_of_birth = form.cleaned_data['date_of_birth']
+        child.save()
+        # przekierowuje na stronę parent-panel zalogowanego użytkownika
+        return redirect('parent-panel', request.user.id)
+
+class ChildDeleteViev(LoginRequiredMixin, View):
+    def get(self, request, child_id):
+        child = Child.objects.get(id=child_id)
+        if child:
+            child.delete()
+            return redirect('parent-panel', request.user.id)
+        return redirect('parent-panel', request.user.id)
 
 class VaxUpdateView(LoginRequiredMixin, UpdateView):
     pass

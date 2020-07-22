@@ -6,33 +6,24 @@
 
 {% block content %}
 
-{#    <div class="jumbotron">#}
-{#        <h3 class="display-5">Witaj w aplikacji MyVax</h3>#}
-{#        <a href="/parent/{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</a>#}
-{#        <p class="lead">Z poziomu tego miejsca, będziesz mógł rejestrować dzieci w aplikacji.</p>#}
-{#        <hr class="my-4">#}
-{#    </div>#}
+    {#    <div class="jumbotron">#}
+    {#        <h3 class="display-5">Witaj w aplikacji MyVax</h3>#}
+    {#        <a href="/parent/{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</a>#}
+    {#        <p class="lead">Z poziomu tego miejsca, będziesz mógł rejestrować dzieci w aplikacji.</p>#}
+    {#        <hr class="my-4">#}
+    {#    </div>#}
 
     <div class="jumbotron py-2 px-4">
-        <h3 class="display-5">Lista zarejestrowanych dzieci</h3>
+        <h3 class="display-5">Lista dzieci użytkownika {{ parent.first_name }} {{ parent.last_name }}</h3>
         <p class="lead">Poniżej znajduje się lista dzieci zarejstowanych przez Ciebie w apliakcji.</p>
-        <hr class="my-4">
-        <p>
-            <span class="d-block mb-2">Możliwe czynności:</span>
-            <a class="btn btn-success" href="" role="button">Dodaj dziecko</a>
-            <a class="btn btn-success" href="" role="button">Edytuj dane dziecka</a>
-        </p>
-
-
-        <h2>Rodzic: {{ parent.first_name }} {{ parent.last_name }}</h2>
-
-
         <ul class="lead">
             <p class="small">Kliknij w imię i nazwisko dziecka, aby zobaczyć szczegóły.</p>
             {% for child in children %}
                 <li>
-                    <a href="/child/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>
+                    <a href="/child/{{ child.id }}">{{ child.first_name }} {{ child.last_name }}</a>
                     , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.
+                    <a href="/child/update/{{ child.id }}" role="button" class="btn btn-info btn-sm">Edytuj dane</a>
+                    <a href="/child/delete/{{ child.id }}" role="button" class="btn btn-danger btn-sm">Usuń dane</a>
                 </li>
             {% empty %}
                 <p>Żedne dziecko nie zosłało jeszcze przez Ciebie zarejestrowane</p>
@@ -40,5 +31,7 @@
             {% endfor %}
 
         </ul>
+        <hr class="my-4">
+        <a href="/child/create" class="btn btn-success" role="button">Dodaj dziecko</a>
     </div>
 {% endblock %}

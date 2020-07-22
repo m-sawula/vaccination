@@ -1,11 +1,15 @@
 from django import forms
 
-from vax.models import Parent
+from vax.models import Parent, Child
+
 
 class ParentForm(forms.ModelForm):
     class Meta:
         model = Parent
         fields = ['first_name', 'last_name']
-# class ParentForm(forms.Form):
-#     first_name = forms.CharField(initial='first_name', required=True)
-#     last_name = forms.CharField(initial='last_name', required=True)
+
+
+class ChildForm(forms.ModelForm):
+    class Meta:
+        model = Child
+        fields = ['first_name', 'last_name', 'sex', 'date_of_birth']

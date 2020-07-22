@@ -18,7 +18,7 @@ from django.urls import path
 
 from vax.views import MainIndexView, LoginView, logout_view, signup
 from vax.views import ParentIndexView, ParentPanelView, ParentUpdateView
-from vax.views import ChildIndexView, ChildCreateView
+from vax.views import ChildIndexView, ChildCreateView, ChildUpdateView, ChildDeleteViev
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,11 +31,14 @@ urlpatterns = [
 
 
     path('parent/', ParentIndexView.as_view(), name='parent-index'),
-    path('paren/panel/<int:user_id>', ParentPanelView.as_view(), name='parent-panel'),
+    path('parent/panel/<int:user_id>', ParentPanelView.as_view(), name='parent-panel'),
     path('parent/update/<int:user_id>', ParentUpdateView.as_view(), name='parent-update'),
 
     path('child/<int:child_id>', ChildIndexView.as_view(), name='child-index'),
-    path('child_create', ChildCreateView.as_view(), name='child-create'),
+    path('child/create', ChildCreateView.as_view(), name='child-create'),
+    path('child/update/<int:child_id>', ChildUpdateView.as_view(), name='child-update'),
+    path('child/delete/<int:child_id>', ChildDeleteViev.as_view(), name='child-delete'),
+
 
     # path('child/<int:child_id>/vax_update/<int:pk>', VaxUpdateView.as_view(), name='vax-update'),
 

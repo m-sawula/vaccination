@@ -20,12 +20,17 @@ class SignUpForm(UserCreationForm):
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
 
-class ChildForm(forms.Form):
-    name = forms.CharField(label="First name", required=False)
-    surname = forms.CharField(label="Last name", required=False)
-    # band_name = forms.CharField(label="Band name")
-    birth_date = forms.DateField(
-        label="Birth date",
-        required=False,
-        input_formats=['%d/%m/%Y']
-    )
+# class ChildForm(forms.Form):
+#     SEX = (
+#         ("M", "male"),
+#         ("F", "female")
+#     )
+#     name = forms.CharField(label="First name", required=False)
+#     surname = forms.CharField(label="Last name", required=False)
+#     sex = forms.ChoiceField(choices=SEX, widget=forms.Select)
+#     # band_name = forms.CharField(label="Band name")
+#     date_of_birth = forms.DateField(
+#         label="Birth date",
+#         required=False,
+#         widget=forms.SelectDateWidget
+#     )
