@@ -7,12 +7,12 @@
     <div class="jumbotron py-2 px-4">
         <h3 class="display-5">Dane dziecka</h3>
         <p class="lead">Poniżej znajdują się inofrmacje o realizacji bilansu zdrowia dzieca i planu szczepiń dziecka.</p>
-        <p class="lead">Wybierz odpowiedni przycisk aby zobaczyć szczegóły.</p>
-        <p class="lead font-weight-bold">{{ child.name }} {{ child.surname }}</p>
-        <p>lat: {{ child.age }}, urodzona: {{ child.date_of_birth }}</p>
+        <p class="lead">Wybierz odpowiedni przycisk, aby zobaczyć szczegóły.</p>
+        <p class="lead font-weight-bold">{{ child.first_name }} {{ child.last_name }}</p>
+        <p>lat: {{ child.age }}, data urodzenia: {{ child.date_of_birth }}</p>
         <hr class="my-2">
         <span class= hidden></span>
-        <a class="btn btn-success" href="/" role="button">Powrót do listy dzieci</a>
+        <a class="btn btn-success" href="{% url 'parent-panel' parent %}" role="button">Powrót do listy dzieci</a>
     </div>
 
     <div class="jumbotron py-2 px-4">

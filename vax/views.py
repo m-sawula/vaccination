@@ -102,7 +102,7 @@ class ParentPanelView(LoginRequiredMixin, View):
 
     def get(self, request, user_id):
         parent = Parent.objects.get(pk=user_id)
-        children = Child.objects.filter(parent_id=user_id)
+        children = Child.objects.filter(parent_id=user_id).order_by('date_of_birth')
 
         return render(
             request,
@@ -149,6 +149,7 @@ class ChildIndexView(LoginRequiredMixin, View):
 
     def get(self, request, child_id):
         child = Child.objects.get(id=child_id)
+        parent = request.user.id
         # health_review = ChildHealthReview.objects.filter(child=child_id)
         vax_program = VaxProgram.objects.filter(child=child_id)
         vax_cycles = VaxCycle.objects.filter(program__child_id=child_id)
@@ -158,6 +159,7 @@ class ChildIndexView(LoginRequiredMixin, View):
             request,
             'child/child_index.html',
             {
+                'parent': parent,
                 'child': child,
                 # 'health-review': health_review,
                 'vax_program': vax_program,
@@ -184,6 +186,7 @@ class ChildCreateView(LoginRequiredMixin, View):
                 "child/child_create.html",
                 {"form": form}
             )
+
         Child.objects.create(
             first_name=form.cleaned_data['first_name'],
             last_name=form.cleaned_data['last_name'],
@@ -205,7 +208,7 @@ class ChildUpdateView(LoginRequiredMixin, View):
                           "form": form,
                           "child": child
                       }
-                      )
+                  )
 
     def post(self, request, child_id):
         child = Child.objects.get(id=child_id)
@@ -216,7 +219,7 @@ class ChildUpdateView(LoginRequiredMixin, View):
                               "form": form,
                               "child": child
                           }
-                          )
+                      )
 
         child.first_name = form.cleaned_data['first_name']
         child.last_name = form.cleaned_data['last_name']
@@ -238,9 +241,3 @@ class ChildDeleteViev(LoginRequiredMixin, View):
         messages.add_message(request, messages.SUCCESS, 'Dane dziecka zostały usunięte z bazy')
         return redirect('parent-panel', request.user.id)
 
-class VaxUpdateView(LoginRequiredMixin, UpdateView):
-    pass
-#     model = Vax
-#     fields = ['vax_date', 'symptom_after_vax']
-#     template_name = 'vax/vax_update.html'
-#     success_url = reverse_lazy('child-index/{child_id}')

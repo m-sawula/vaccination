@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from vax.models import VaxName, VaxCycleName
+from vax.models import VaxName, VaxCycleName, VaxProgramName
 
 from vax.models import VaxProgram, VaxCycle, Vax
 
@@ -10,6 +10,10 @@ class VaxName(admin.ModelAdmin):
 
 @admin.register(VaxCycleName)
 class VaxCycleName(admin.ModelAdmin):
+    pass
+
+@admin.register(VaxProgramName)
+class VaxProgramName(admin.ModelAdmin):
     pass
 
 @admin.register(VaxProgram)
@@ -28,9 +32,9 @@ class Vax(admin.ModelAdmin):
         'exp_vax_date',
         'vax_date',
         'symptom_after_vax',
-        'vaxcycle'
+        'vaxcycle',
     )
     # tu wpisuemy pola które, będą zablokowane do edycji w adminie
-    exclude = ['exp_vax_date']
+    # exclude = ['exp_vax_date']
 
 # Register your models here.

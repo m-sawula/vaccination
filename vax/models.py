@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import  date
+from datetime import date, timedelta
 from django.contrib.auth.models import User
 from dateutil.relativedelta import relativedelta
 from django_auto_one_to_one import AutoOneToOneModel
@@ -8,17 +8,14 @@ from django.dispatch import receiver
 
 
 class Parent(AutoOneToOneModel(User)):
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
+    """Obiekt Parent jest tworzony automatycznie.
+
+    Powstaje podczas rejestracji nowego urzytkownika.
+    Po zalaoganiu neleży zaktualizować dane rodzica.
+    """
     first_name = models.CharField(max_length=64, null=True)
     last_name = models.CharField(max_length=64, null=True)
-#     email = models.CharField(max_length=64)
     create_date = models.DateTimeField(auto_now_add=True)
-#
-# @receiver(post_save, sender=User)
-# def update_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Parent.objects.create(user=instance)
-#     instance.parent.save()
 
 
 class Child(models.Model):
@@ -39,8 +36,13 @@ class Child(models.Model):
         return relativedelta(date.today(), self.date_of_birth).years
         # return (date.today() - self.date_of_birth).days  # zwraca wiek w dniach
 
+    @property
+    def year(self):
+        return self.date_of_birth.strftime('%Y')
+
     def __str__(self):
-        return f'{self.last_name} {self.first_name}, {self.age}-{self.id}-{self.parent_id}'
+        return f'{self.last_name} {self.first_name} | {self.date_of_birth} | id:{self.id} | pid:{self.parent_id}'
+
 
 class ChildHealthReview(models.Model):
     NAME_CHILD_REVIEW = (
@@ -65,20 +67,28 @@ class ChildHealthReview(models.Model):
     child = models.ManyToManyField(Child)
 
 
-class VaxName(models.Model):
-    """The model stores inoculation names only."""
-    vax_name = models.CharField(max_length=64)
+class VaxProgramName(models.Model):
+    """The model stores vaccination program names."""
+    vax_program_name = models.CharField(max_length=64)
 
     def __str__(self):
-        return self.vax_name
+        return self.vax_program_name
 
 
 class VaxCycleName(models.Model):
-    """The model stores vaccination cycle names only."""
+    """The model stores vaccination cycle names."""
     vax_cycle_name = models.CharField(max_length=64)
 
     def __str__(self):
         return self.vax_cycle_name
+
+
+class VaxName(models.Model):
+    """The model stores inoculation names."""
+    vax_name = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.vax_name
 
 
 class VaxProgram(models.Model):
@@ -86,7 +96,7 @@ class VaxProgram(models.Model):
 
     One program for year.
     """
-    vax_program_name = models.CharField(max_length=64)
+    vax_program_name = models.ForeignKey(VaxProgramName, on_delete=models.CASCADE)
     year = models.IntegerField()
     child = models.ForeignKey(Child, on_delete=models.CASCADE)
 
@@ -115,7 +125,8 @@ class Vax(models.Model):
         verbose_name='Nazwa szczepienia',
     )
     exp_vax_date = models.DateField(
-        verbose_name='Wymagana data wykonania szczepenia'
+        verbose_name='Wymagana data wykonania szczepenia',
+        null=True
     )
     vax_date = models.DateField(
         verbose_name='Data wykonania szczepienia',
@@ -133,7 +144,6 @@ class Vax(models.Model):
 
     def __str__(self):
         return f'{self.name} | {self.exp_vax_date} | {self.vaxcycle}'
-
 
 # """
 # # tworzenie programu na dany rok

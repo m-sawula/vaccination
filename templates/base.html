@@ -11,11 +11,14 @@
 
 </head>
 <body>
-<div class="jumbotron py-2 m-4">
-    <span>Witaj: {{ user.username }} ||</span>
-    <a href="{% url 'logout' %}">wyloguj się</a>
+{#    pokazuje link do wylogowania tylko po zalogowaniu    #}
+{% if request.user.is_authenticated %}
+    <div id="login-show-hidd" class="jumbotron py-2 m-4">
+        <span>witaj: {{ user.username }} ||</span>
+        <a href="{% url 'logout' %}">wyloguj się</a>
+    </div>
+{% endif %}
 
-</div>
 
 <div class="jumbotron py-3  m-4">
     {#   blok nagłówka    #}
