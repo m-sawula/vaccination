@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
 
 from vax.models import User, Parent, Child, ChildHealthReview, VaxProgram, VaxCycle, Vax
@@ -153,7 +153,16 @@ class ChildIndexView(LoginRequiredMixin, View):
         # health_review = ChildHealthReview.objects.filter(child=child_id)
         vax_program = VaxProgram.objects.filter(child=child_id)
         vax_cycles = VaxCycle.objects.filter(program__child_id=child_id)
-        vaxes = Vax.objects.filter(vaxcycle__program__child_id=child_id).order_by('exp_vax_date')
+        vaxes = Vax.objects.filter(vaxcycle__program__child_id=child_id)
+
+        vc_gru = vax_cycles.filter(name__vax_cycle_name__icontains='gru')
+        v_gru = vaxes.filter(name__vax_name__icontains='gru').order_by('exp_vax_date')
+
+        vc_wzw = vax_cycles.filter(name__vax_cycle_name__icontains='wzw')
+        v_wzw = vaxes.filter(name__vax_name__icontains='wzw').order_by('exp_vax_date')
+
+        vc_dtp = vax_cycles.filter(name__vax_cycle_name__icontains='dtp')
+        v_dtp = vaxes.filter(name__vax_name__icontains='dtp').order_by('exp_vax_date')
 
         return render(
             request,
@@ -162,9 +171,17 @@ class ChildIndexView(LoginRequiredMixin, View):
                 'parent': parent,
                 'child': child,
                 # 'health-review': health_review,
+
                 'vax_program': vax_program,
-                'vax_cycles': vax_cycles,
-                'vaxes': vaxes
+
+                'vc_gru': vc_gru,
+                'v_gru': v_gru,
+
+                'vc_wzw': vc_wzw,
+                'v_wzw': v_wzw,
+
+                'vc_dtp': vc_dtp,
+                'v_dtp': v_dtp
             }
         )
 
@@ -198,7 +215,6 @@ class ChildCreateView(LoginRequiredMixin, View):
         return redirect('parent-panel', request.user.id)
 
 
-
 class ChildUpdateView(LoginRequiredMixin, View):
     def get(self, request, child_id):
         child = Child.objects.get(id=child_id)
@@ -208,7 +224,7 @@ class ChildUpdateView(LoginRequiredMixin, View):
                           "form": form,
                           "child": child
                       }
-                  )
+                      )
 
     def post(self, request, child_id):
         child = Child.objects.get(id=child_id)
@@ -219,7 +235,7 @@ class ChildUpdateView(LoginRequiredMixin, View):
                               "form": form,
                               "child": child
                           }
-                      )
+                          )
 
         child.first_name = form.cleaned_data['first_name']
         child.last_name = form.cleaned_data['last_name']
@@ -228,6 +244,7 @@ class ChildUpdateView(LoginRequiredMixin, View):
         child.save()
         # przekierowuje na stronę parent-panel zalogowanego użytkownika
         return redirect('parent-panel', request.user.id)
+
 
 class ChildDeleteViev(LoginRequiredMixin, View):
     def get(self, request, child_id):
@@ -241,3 +258,5 @@ class ChildDeleteViev(LoginRequiredMixin, View):
         messages.add_message(request, messages.SUCCESS, 'Dane dziecka zostały usunięte z bazy')
         return redirect('parent-panel', request.user.id)
 
+class VaxUpdateView(LoginRequiredMixin, UpdateView):
+    pass

@@ -101,7 +101,7 @@ class VaxProgram(models.Model):
     child = models.ForeignKey(Child, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.vax_program_name} | {self.year} | {self.child}'
+        return f'{self.vax_program_name} | {self.child}'
 
 
 class VaxCycle(models.Model):
@@ -124,26 +124,26 @@ class Vax(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Nazwa szczepienia',
     )
-    exp_vax_date = models.DateField(
-        verbose_name='Wymagana data wykonania szczepenia',
-        null=True
-    )
-    vax_date = models.DateField(
-        verbose_name='Data wykonania szczepienia',
-        null=True
-    )
-    symptom_after_vax = models.TextField(
-        verbose_name='Obserwacje po szczepieniu'
-        , null=True
-    )
     vaxcycle = models.ForeignKey(
         VaxCycle,
         on_delete=models.CASCADE,
         verbose_name='Cykl dla szczepionki'
     )
+    exp_vax_date = models.DateField(
+        verbose_name='Wymagana data szczepenia',
+        null=True
+    )
+    vax_date = models.DateField(
+        verbose_name='Data szczepienia',
+        null=True
+    )
+    symptom_after_vax = models.TextField(
+        verbose_name='Obserwacje',
+        null=True
+    )
 
     def __str__(self):
-        return f'{self.name} | {self.exp_vax_date} | {self.vaxcycle}'
+        return f'{self.name} | {self.vaxcycle}'
 
 # """
 # # tworzenie programu na dany rok
