@@ -135,11 +135,13 @@ class Vax(models.Model):
     )
     vax_date = models.DateField(
         verbose_name='Data szczepienia',
-        null=True
+        null=True,
+        blank=True
     )
     symptom_after_vax = models.TextField(
         verbose_name='Obserwacje',
-        null=True
+        null=True,
+        blank=True
     )
 
     def __str__(self):

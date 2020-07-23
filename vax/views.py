@@ -11,7 +11,7 @@ from vax.models import User, Parent, Child, ChildHealthReview, VaxProgram, VaxCy
 from django.views.generic import CreateView, UpdateView
 
 from vax.forms.standard_forms import LoginForm, SignUpForm
-from vax.forms.model_forms import ParentForm, ChildForm
+from vax.forms.model_forms import ParentForm, ChildForm, VaxForm
 
 
 class MainIndexView(View):
@@ -258,5 +258,33 @@ class ChildDeleteViev(LoginRequiredMixin, View):
         messages.add_message(request, messages.SUCCESS, 'Dane dziecka zostały usunięte z bazy')
         return redirect('parent-panel', request.user.id)
 
-class VaxUpdateView(LoginRequiredMixin, UpdateView):
-    pass
+
+class VaxUpdateView(LoginRequiredMixin, View):
+    def get(self, request, child_id, vax_id):
+        child = Child.objects.get(id=child_id)
+        vax = Vax.objects.get(id=vax_id)
+        form = VaxForm(instance=vax)
+        return render(request,
+                      'vax/vax_update.html', {
+                          "form": form,
+                          "vax": vax
+                      }
+                      )
+
+    def post(self, request, child_id, vax_id):
+        child = Child.objects.get(id=child_id)
+        vax = Vax.objects.get(id=vax_id)
+        form = VaxForm(request.POST, instance=vax)
+        if not form.is_valid():
+            return render(request,
+                          'vax/vax_update.html', {
+                              "form": form,
+                              "vax": vax
+                          }
+                          )
+
+        vax.vax_date = form.cleaned_data['vax_date']
+        vax.symptom_after_vax = form.cleaned_data['symptom_after_vax']
+        vax.save()
+        # przekierowuje na stronę parent-panel zalogowanego użytkownika
+        return redirect('child-index', child_id)
