@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
@@ -164,13 +165,21 @@ class ChildIndexView(LoginRequiredMixin, View):
         vc_dtp = vax_cycles.filter(name__vax_cycle_name__icontains='dtp')
         v_dtp = vaxes.filter(name__vax_name__icontains='dtp').order_by('exp_vax_date')
 
+        vc_ipv = vax_cycles.filter(name__vax_cycle_name__icontains='ipv')
+        v_ipv = vaxes.filter(name__vax_name__icontains='ipv').order_by('exp_vax_date')
+
+        vc_hib = vax_cycles.filter(name__vax_cycle_name__icontains='hib')
+        v_hib = vaxes.filter(name__vax_name__icontains='hib').order_by('exp_vax_date')
+
+        vc_mmr = vax_cycles.filter(name__vax_cycle_name__icontains='mmr')
+        v_mmr = vaxes.filter(name__vax_name__icontains='mmr').order_by('exp_vax_date')
+
         return render(
             request,
             'child/child_index.html',
             {
                 'parent': parent,
                 'child': child,
-                # 'health-review': health_review,
 
                 'vax_program': vax_program,
 
@@ -181,7 +190,17 @@ class ChildIndexView(LoginRequiredMixin, View):
                 'v_wzw': v_wzw,
 
                 'vc_dtp': vc_dtp,
-                'v_dtp': v_dtp
+                'v_dtp': v_dtp,
+
+                'vc_ipv': vc_ipv,
+                'v_ipv': v_ipv,
+
+                'vc_hib': vc_hib,
+                'v_hib': v_hib,
+
+                'vc_mmr': vc_mmr,
+                'v_mmr': v_mmr,
+
             }
         )
 
@@ -288,3 +307,5 @@ class VaxUpdateView(LoginRequiredMixin, View):
         vax.save()
         # przekierowuje na stronę parent-panel zalogowanego użytkownika
         return redirect('child-index', child_id)
+        # return HttpResponse(
+        #     '<script type="text/javascript">window.close(); window.opener.parent.location.href="/child/11";</script>'

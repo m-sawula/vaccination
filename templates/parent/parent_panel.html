@@ -19,7 +19,7 @@
         <ul class="lead">
             <p class="small">Kliknij w imię i nazwisko dziecka, aby zobaczyć szczegóły.</p>
             {% for child in children %}
-                <li>
+                <li class="py-2">
                     <a href="/child/{{ child.id }}">{{ child.first_name }} {{ child.last_name }}</a>
                     , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.
                     <a href="/child/update/{{ child.id }}" role="button" class="btn btn-info btn-sm">Edytuj dane</a>

@@ -41,7 +41,8 @@ class Child(models.Model):
         return self.date_of_birth.strftime('%Y')
 
     def __str__(self):
-        return f'{self.last_name} {self.first_name} | {self.date_of_birth} | id:{self.id} | pid:{self.parent_id}'
+        return f'{self.last_name} {self.first_name} | {self.date_of_birth}'
+        # return f'{self.last_name} {self.first_name} | {self.date_of_birth} | id:{self.id} | pid:{self.parent_id}'
 
 
 class ChildHealthReview(models.Model):
@@ -61,10 +62,10 @@ class ChildHealthReview(models.Model):
 
     )
     name_child_review = models.IntegerField(choices=NAME_CHILD_REVIEW, default=0)
-    exp_workup_day = models.DateField()
-    workup_day = models.DateField()
-    remarks = models.TextField()
-    child = models.ManyToManyField(Child)
+    exp_workup_day = models.DateField(verbose_name='Wymagana data badania')
+    workup_day = models.DateField(verbose_name='Data badania', help_text='YYYY-MM-DD', blank=True, null=True)
+    remarks = models.TextField(verbose_name='Spostrzeżenia i zalecenia')
+    child = models.ForeignKey(Child, on_delete=models.CASCADE, null=True)
 
 
 class VaxProgramName(models.Model):
@@ -131,10 +132,12 @@ class Vax(models.Model):
     )
     exp_vax_date = models.DateField(
         verbose_name='Wymagana data szczepenia',
+        help_text='YYYY-MM-DD',
         null=True
     )
     vax_date = models.DateField(
         verbose_name='Data szczepienia',
+        help_text='YYYY-MM-DD',
         null=True,
         blank=True
     )
@@ -146,6 +149,7 @@ class Vax(models.Model):
 
     def __str__(self):
         return f'{self.name} | {self.vaxcycle}'
+
 
 # """
 # # tworzenie programu na dany rok
