@@ -1,5 +1,7 @@
-from django.db import models
+# import datetime
 from datetime import date, timedelta
+
+from django.db import models
 from django.contrib.auth.models import User
 from dateutil.relativedelta import relativedelta
 from django_auto_one_to_one import AutoOneToOneModel
@@ -18,10 +20,53 @@ class Parent(AutoOneToOneModel(User)):
     create_date = models.DateTimeField(auto_now_add=True)
 
 
+class ChildManager(models.Manager):
+    """Tworzy jednocześnie obiekt Child oraz ChildHealthReview.
+
+    Kiedy rodzić rejestruje dziecko,
+    jednocześnie  dla dziecka tworzony jest harmonogram badań lekarskich.
+
+    health_rev_dates: dni w których ma być wykonane kolejne badanie
+    (liczba lat * liczba miesięcy * liczba dni)
+    """
+
+    def create_child(self, first_name, last_name, date_of_birth, sex, parent_id):
+        child = Child.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            date_of_birth=date_of_birth,
+            sex=sex,
+            parent_id=parent_id
+        )
+        health_rev_dates = (
+            child.date_of_birth + timedelta(days=1),
+            child.date_of_birth + timedelta(days=7),
+            child.date_of_birth + timedelta(days=30),
+            child.date_of_birth + timedelta(days=3 * 30),
+            child.date_of_birth + timedelta(days=6 * 30),
+            child.date_of_birth + timedelta(days=12 * 30),
+            child.date_of_birth + timedelta(days=2 * 12 * 30),
+            child.date_of_birth + timedelta(days=4 * 12 * 30),
+            child.date_of_birth + timedelta(days=6 * 12 * 30),
+            child.date_of_birth + timedelta(days=10 * 12 * 30),
+            child.date_of_birth + timedelta(days=15 * 12 * 30),
+            child.date_of_birth + timedelta(days=18 * 12 * 30),
+        )
+
+        for health_number, health_rev_dates in enumerate(health_rev_dates):
+            # health_number - argument dla funkcji enumerate jest liczony od 0 jeżeli nie podamy innej liczby
+            ChildHealthReview.objects.create(
+                name_child_review=health_number + 1,
+                exp_workup_day=health_rev_dates,
+                # bezpośrednie przypisanie daty
+                # exp_workup_day=child.date_of_birth + timedelta(days=1),
+                child=child)
+
+
 class Child(models.Model):
     SEX = (
-        ("M", "male"),
-        ("F", "female")
+        ("M", "mężczyzna"),
+        ("F", "kobieta")
     )
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
@@ -29,16 +74,24 @@ class Child(models.Model):
     sex = models.CharField(max_length=1, choices=SEX)
     parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
+    objects = ChildManager()
 
     @property
     def age(self):
         # zwraca wiek w latach,  trzeba doinstalować pip install python-dateutil
         return relativedelta(date.today(), self.date_of_birth).years
-        # return (date.today() - self.date_of_birth).days  # zwraca wiek w dniach
 
     @property
     def year(self):
         return self.date_of_birth.strftime('%Y')
+
+    @property
+    def age_in_month(self):
+        return self.date_of_birth.strftime('%m')
+
+    @property
+    def age_in_day(self):
+        return (date.today() - self.date_of_birth).days  # zwraca wiek w dniach
 
     def __str__(self):
         return f'{self.last_name} {self.first_name} | {self.date_of_birth}'
@@ -47,25 +100,54 @@ class Child(models.Model):
 
 class ChildHealthReview(models.Model):
     NAME_CHILD_REVIEW = (
-        (1, 'post-birth workup'),
-        (2, 'midwife home visit on the 7th day of life'),
-        (3, 'workup on the 1th month of life'),
-        (4, 'midwife home visit on the 3th month of life'),
-        (5, 'workup on the 6th month of life'),
-        (6, 'workup on the 12th month of life'),
-        (7, 'workup on the 2th year of life'),
-        (8, 'workup on the 4th year of life'),
-        (9, 'workup on the 6th year of life'),
-        (10, 'workup on the 10th year of life'),
-        (11, 'workup on the 15th year of life'),
-        (12, 'workup on the 18th year of life'),
+        (1, 'Badanie po urodzeniu'),
+        # (1, 'post-birth workup'),
+        (2, 'Domowa wizyta położnej w 7 dniu życia'),
+        # (2, 'midwife home visit on the 7th day of life'),
+        (3, 'Badanie w 1 miesiącu życia'),
+        # (3, 'workup on the 1th month of life'),
+        (4, 'Domowa wizyta położnej w 3 miesiącu życia'),
+        # (4, 'midwife home visit on the 3th month of life'),
+        (5, 'Badanie w 6 miesiącu życia'),
+        # (5, 'workup on the 6th month of life'),
+        (6, 'Badanie w 12 miesiącu życia'),
+        # (6, 'workup on the 12th month of life'),
+        (7, 'Badanie w 2 roku życia'),
+        # (7, 'workup on the 2th year of life'),
+        (8, 'Badanie w 4 roku życia'),
+        # (8, 'workup on the 4th year of life'),
+        (9, 'Badanie w 6 roku życia (przed pójściem do szkoły)'),
+        # (9, 'workup on the 6th year of life'),
+        (10, 'Badanie w 10 roku życia'),
+        # (10, 'workup on the 10th year of life'),
+        (11, 'Badanie w 15 roku życia'),
+        # (11, 'workup on the 15th year of life'),
+        (12, 'Badanie w 18 roku życia'),
+        # (12, 'workup on the 18th year of life'),
 
     )
-    name_child_review = models.IntegerField(choices=NAME_CHILD_REVIEW, default=0)
-    exp_workup_day = models.DateField(verbose_name='Wymagana data badania')
-    workup_day = models.DateField(verbose_name='Data badania', help_text='YYYY-MM-DD', blank=True, null=True)
-    remarks = models.TextField(verbose_name='Spostrzeżenia i zalecenia')
-    child = models.ForeignKey(Child, on_delete=models.CASCADE, null=True)
+    name_child_review = models.IntegerField(
+        choices=NAME_CHILD_REVIEW,
+        default=0
+    )
+    exp_workup_day = models.DateField(
+        verbose_name='Wymagana data badania'
+    )
+    workup_day = models.DateField(
+        verbose_name='Data badania',
+        help_text='YYYY-MM-DD',
+        blank=True,
+        null=True
+    )
+    remarks = models.TextField(
+        verbose_name='Obserwacje i zalecenia',
+        blank=True,
+        null=True)
+    child = models.ForeignKey(
+        Child,
+        on_delete=models.CASCADE,
+        null=True
+    )
 
 
 class VaxProgramName(models.Model):
@@ -149,7 +231,6 @@ class Vax(models.Model):
 
     def __str__(self):
         return f'{self.name} | {self.vaxcycle}'
-
 
 # """
 # # tworzenie programu na dany rok

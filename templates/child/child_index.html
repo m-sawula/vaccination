@@ -9,10 +9,20 @@
         <p class="lead">Poniżej znajdują się inofrmacje o realizacji bilansu zdrowia dzieca i planu szczepiń
             dziecka.</p>
         <p class="lead">Wybierz odpowiedni przycisk, aby zobaczyć szczegóły.</p>
-        <p class="lead font-weight-bold">{{ child.first_name }} {{ child.last_name }}, {{ child.age }} lat</p>
-        <p> data urodzenia: {{ child.date_of_birth|date:"SHORT_DATE_FORMAT" }}</p>
+        <p class="lead font-weight-bold">{{ child.first_name }} {{ child.last_name }}</p>
+
+        <p> data urodzenia:  {{ child.date_of_birth|date:"Y/m/d " }},
+            {% if child.age_in_day < 30 %}
+                wiek w dniach: {{ child.age_in_day }}
+            {% elif child.age_in_day >= 30 and child.age_in_day <= 365  %}
+                wiek w miesiącach: {{ child.age_in_month }},
+            {% else %}
+                wiek w latach: {{ child.age }},
+            {% endif %}
+        {#   pobiera dane z listy wyobru   #}
+            płeć: {{ child.get_sex_display }}
+        </p>
         <hr class="my-2">
-        <span class=hidden></span>
         <a class="btn btn-success" href="{% url 'parent-panel' parent %}" role="button">Powrót do listy dzieci</a>
     </div>
 
@@ -22,19 +32,39 @@
         <a id="btn-1" class="btn btn-success" href="" role="button">Ukryj szczegóły</a>
         <a id="btn-2" class="btn btn-success" href="" role="button">Pokaż szczegóły</a>
 
-
         {# div id=div-1 służy do ukrywania i odkrywania danych o bilansach zdrowia   #}
         <div id="div-1">
 
+            {#   bilans zdrowia   #}
+{#            <p class="font-weight-bold">{{ child_h_rs }}</p>#}
+
             <ul class="lead">
-                <p class="small">Tutaj będzie bilans zdrowia dziecka</p>
-                {#            {% for child in children %}#}
-                {#                <li>#}
-                {#                    <a href="/vax_plan/{{ child.id }}">{{ child.name }} {{ child.surname }}</a>#}
-                {#                    , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.#}
-                {#                </li>#}
-                {#            {% endfor %}#}
+                {% for review in health_rev %}
+
+                    <li class="m-2">
+                        {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
+                        {% if not review.workup_day %}
+                            <a class="text-danger">{{ review.get_name_child_review_display }}</a>
+                        {% else %}
+                            <a class="text-success">{{ review.get_name_child_review_display }}</a>
+                        {% endif %}
+
+                        <a href="{% url 'health-rev-update' child.id review.id %}"
+                           role="button"
+                           class="btn btn-info btn-sm">
+                            Edytuj dane
+                        </a>
+                        <br>
+                        wymagana data badania: {{ review.exp_workup_day|date:"Y / m / d" }}<br>
+                        data badania: {{ review.workup_day|date:"Y / m / d" }}<br>
+                        obserwacje i zalecenia: {{ review.remarks }}
+                    </li>
+
+                {% empty %}
+                    {{ "To dziecko nie ma jeszcze dodanych bilansów zdrowia." }}
+                {% endfor %}
             </ul>
+            <hr class="my-2">
         </div>
     </div>
 
@@ -55,7 +85,7 @@
 
         {# div id=div-2 służy do ukrywania i odkrywania danych o szczepieniach   #}
         <div id="div-2">
-{#            <hr class="my-2">#}
+            {#            <hr class="my-2">#}
             {#    program szczepień    #}
             <ul class="lead">
 
@@ -67,16 +97,14 @@
                     {% for item in v_gru %}
 
                         <li class="m-2">
-                    {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
-                        {% if not item.vax_date %}
-                            <a class="text-danger">{{ item.name }}</a>
-                        {% else %}
-                            <a class="text-success">{{ item.name }}</a>
-                        {% endif %}
+                            {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
+                            {% if not item.vax_date %}
+                                <a class="text-danger">{{ item.name }}</a>
+                            {% else %}
+                                <a class="text-success">{{ item.name }}</a>
+                            {% endif %}
 
                             <a href="{% url 'child-vax-update' child.id item.id %}"
-{#                               target="popup"#}
-{#                               onclick="window.open('/child/{{ child.id }}/vax/{{ item.id }}/update', 'name', 'width=500,heigt=300')"#}
                                role="button"
                                class="btn btn-info btn-sm">
                                 Edytuj dane
@@ -102,11 +130,11 @@
 
                         <li class="m-2">
                             {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
-                        {% if not item.vax_date %}
-                            <a class="text-danger">{{ item.name }}</a>
-                        {% else %}
-                            <a class="text-success">{{ item.name }}</a>
-                        {% endif %}
+                            {% if not item.vax_date %}
+                                <a class="text-danger">{{ item.name }}</a>
+                            {% else %}
+                                <a class="text-success">{{ item.name }}</a>
+                            {% endif %}
 
                             <a href="{% url 'child-vax-update' child.id item.id %}" role="button"
                                class="btn btn-info btn-sm">Edytuj dane</a>
@@ -130,12 +158,12 @@
                     {% for item in v_dtp %}
 
                         <li class="m-2">
-                        {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
-                        {% if not item.vax_date %}
-                            <a class="text-danger">{{ item.name }}</a>
-                        {% else %}
-                            <a class="text-success">{{ item.name }}</a>
-                        {% endif %}
+                            {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
+                            {% if not item.vax_date %}
+                                <a class="text-danger">{{ item.name }}</a>
+                            {% else %}
+                                <a class="text-success">{{ item.name }}</a>
+                            {% endif %}
                             <a href="{% url 'child-vax-update' child.id item.id %}" role="button"
                                class="btn btn-info btn-sm">Edytuj dane</a>
                             <br>
@@ -157,12 +185,12 @@
                     {% for item in v_ipv %}
 
                         <li class="m-2">
-                        {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
-                        {% if not item.vax_date %}
-                            <a class="text-danger">{{ item.name }}</a>
-                        {% else %}
-                            <a class="text-success">{{ item.name }}</a>
-                        {% endif %}
+                            {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
+                            {% if not item.vax_date %}
+                                <a class="text-danger">{{ item.name }}</a>
+                            {% else %}
+                                <a class="text-success">{{ item.name }}</a>
+                            {% endif %}
                             <a href="{% url 'child-vax-update' child.id item.id %}" role="button"
                                class="btn btn-info btn-sm">Edytuj dane</a>
                             <br>
@@ -180,20 +208,20 @@
                 {#   cykl szczepień dla hib   #}
                 <p class="font-weight-bold">{{ vc_hib|first }}</p>
 
-{#                {% for hib in vc_hib %}#}
-{#                    <p class="font-weight-bold">{{ hib.name }}</p>#}
-{#                {% endfor %}#}
+                {#                {% for hib in vc_hib %}#}
+                {#                    <p class="font-weight-bold">{{ hib.name }}</p>#}
+                {#                {% endfor %}#}
 
                 <ul class="lead">
                     {% for item in v_hib %}
 
                         <li class="m-2">
-                        {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
-                        {% if not item.vax_date %}
-                            <a class="text-danger">{{ item.name }}</a>
-                        {% else %}
-                            <a class="text-success">{{ item.name }}</a>
-                        {% endif %}
+                            {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
+                            {% if not item.vax_date %}
+                                <a class="text-danger">{{ item.name }}</a>
+                            {% else %}
+                                <a class="text-success">{{ item.name }}</a>
+                            {% endif %}
                             <a href="{% url 'child-vax-update' child.id item.id %}" role="button"
                                class="btn btn-info btn-sm">Edytuj dane</a>
                             <br>
@@ -211,21 +239,21 @@
                 {#   cykl szczepień dla mmr   #}
                 <p class="font-weight-bold">{{ vc_mmr|first }}</p>
 
-{#                {% for mmr in vc_mmr %}#}
-{#                    <p class="font-weight-bold">{{ mmr.name }}</p>#}
-{#                {% endfor %}#}
+                {#                {% for mmr in vc_mmr %}#}
+                {#                    <p class="font-weight-bold">{{ mmr.name }}</p>#}
+                {#                {% endfor %}#}
 
                 {#   szczepienia w cyklu mmr   #}
                 <ul class="lead">
                     {% for item in v_mmr %}
 
                         <li class="m-2">
-                        {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
-                        {% if not item.vax_date %}
-                            <a class="text-danger">{{ item.name }}</a>
-                        {% else %}
-                            <a class="text-success">{{ item.name }}</a>
-                        {% endif %}
+                            {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
+                            {% if not item.vax_date %}
+                                <a class="text-danger">{{ item.name }}</a>
+                            {% else %}
+                                <a class="text-success">{{ item.name }}</a>
+                            {% endif %}
                             <a href="{% url 'child-vax-update' child.id item.id %}" role="button"
                                class="btn btn-info btn-sm">Edytuj dane</a>
                             <br>

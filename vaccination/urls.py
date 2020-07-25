@@ -19,7 +19,7 @@ from django.urls import path
 from vax.views import MainIndexView, LoginView, logout_view, signup
 from vax.views import ParentIndexView, ParentPanelView, ParentUpdateView
 from vax.views import ChildIndexView, ChildCreateView, ChildUpdateView, ChildDeleteViev
-from vax.views import VaxUpdateView
+from vax.views import VaxUpdateView, HealthReviewUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,8 +40,8 @@ urlpatterns = [
     path('child/update/<int:child_id>', ChildUpdateView.as_view(), name='child-update'),
     path('child/delete/<int:child_id>', ChildDeleteViev.as_view(), name='child-delete'),
 
-
     path('child/<int:child_id>/vax/<int:vax_id>/update', VaxUpdateView.as_view(), name='child-vax-update'),
+    path('child/<int:child_id>/health_rev/<int:health_rev_id>/update', HealthReviewUpdateView.as_view(), name='health-rev-update'),
 
 ]
 

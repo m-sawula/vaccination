@@ -2,17 +2,15 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
+
 from django.views import View
 
 from vax.models import User, Parent, Child, ChildHealthReview, VaxProgram, VaxCycle, Vax
 
-from django.views.generic import CreateView, UpdateView
-
 from vax.forms.standard_forms import LoginForm, SignUpForm
-from vax.forms.model_forms import ParentForm, ChildForm, VaxForm
+
+from vax.forms.model_forms import ParentForm, ChildForm, VaxForm, HealthReviewForm
 
 
 class MainIndexView(View):
@@ -87,8 +85,11 @@ def signup(request):
     return render(request, 'auth/signup.html', {'form': form})
 
 
-# testowa strona dla ZALOGOWANYCH
 class ParentIndexView(LoginRequiredMixin, View):
+    """Widok początkowy dla rodzica.
+
+    Umożliwia edytowanie danych rodzica oraz przejście do listy dzieci.
+    """
     def get(self, request):
         return render(request, "parent/parent_index.html")
 
@@ -96,7 +97,7 @@ class ParentIndexView(LoginRequiredMixin, View):
 class ParentPanelView(LoginRequiredMixin, View):
     """Wyświetla rodzica oraz dzieci które zarejestrował.
 
-    Parent jest obiektem który jest tworzony automatycznie
+    Parent jest obiektem, który jest tworzony automatycznie
     podczas rejestrancj użytkownika. Po zarejestrowaniu rodzic
     musi zaktualizować swoje imie i nazwisko.
     """
@@ -151,7 +152,9 @@ class ChildIndexView(LoginRequiredMixin, View):
     def get(self, request, child_id):
         child = Child.objects.get(id=child_id)
         parent = request.user.id
-        # health_review = ChildHealthReview.objects.filter(child=child_id)
+
+        child_health_reviews = ChildHealthReview.objects.filter(child_id=child_id)
+
         vax_program = VaxProgram.objects.filter(child=child_id)
         vax_cycles = VaxCycle.objects.filter(program__child_id=child_id)
         vaxes = Vax.objects.filter(vaxcycle__program__child_id=child_id)
@@ -181,6 +184,8 @@ class ChildIndexView(LoginRequiredMixin, View):
                 'parent': parent,
                 'child': child,
 
+                'health_rev': child_health_reviews,
+
                 'vax_program': vax_program,
 
                 'vc_gru': vc_gru,
@@ -204,6 +209,35 @@ class ChildIndexView(LoginRequiredMixin, View):
             }
         )
 
+class HealthReviewUpdateView(LoginRequiredMixin, View):
+    def get(self, request, child_id, health_rev_id):
+        child = Child.objects.get(id=child_id)
+        health_rev = ChildHealthReview.objects.get(id=health_rev_id)
+        form = HealthReviewForm(instance=health_rev)
+        return render(request,
+                      'child/child_health_rev_update.html', {
+                          "form": form,
+                          "health_rev": health_rev
+                      }
+                      )
+
+    def post(self, request, child_id, health_rev_id):
+        child = Child.objects.get(id=child_id)
+        health_rev = ChildHealthReview.objects.get(id=health_rev_id)
+        form = HealthReviewForm(instance=health_rev)
+        if not form.is_valid():
+            return render(request,
+                          'child/child_health_rev_update.html', {
+                              "form": form,
+                              "health_rev": health_rev
+                          }
+                          )
+        health_rev.workup_day = form.cleaned_data['workup_day']
+        health_rev.remarks = form.cleaned_data['remarks']
+        health_rev.save()
+
+        return redirect('child-index', child_id)
+
 
 class ChildCreateView(LoginRequiredMixin, View):
     def get(self, request):
@@ -222,8 +256,9 @@ class ChildCreateView(LoginRequiredMixin, View):
                 "child/child_create.html",
                 {"form": form}
             )
-
-        Child.objects.create(
+        # obiekt Child jest tworzony za pomocą napisanej metody
+        # create_child, która jest w klasie ChildManager w  models.py
+        Child.objects.create_child(
             first_name=form.cleaned_data['first_name'],
             last_name=form.cleaned_data['last_name'],
             date_of_birth=form.cleaned_data['date_of_birth'],
@@ -291,7 +326,7 @@ class VaxUpdateView(LoginRequiredMixin, View):
                       )
 
     def post(self, request, child_id, vax_id):
-        child = Child.objects.get(id=child_id)
+        # child = Child.objects.get(id=child_id)
         vax = Vax.objects.get(id=vax_id)
         form = VaxForm(request.POST, instance=vax)
         if not form.is_valid():
@@ -307,5 +342,3 @@ class VaxUpdateView(LoginRequiredMixin, View):
         vax.save()
         # przekierowuje na stronę parent-panel zalogowanego użytkownika
         return redirect('child-index', child_id)
-        # return HttpResponse(
-        #     '<script type="text/javascript">window.close(); window.opener.parent.location.href="/child/11";</script>'
