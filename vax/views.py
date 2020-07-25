@@ -142,8 +142,8 @@ class ParentUpdateView(LoginRequiredMixin, View):
         parent.first_name = form.cleaned_data['first_name']
         parent.last_name = form.cleaned_data['last_name']
         parent.save()
-        # przekierowuje na stronę child panel zalogowanego użytkownika
-        return redirect('parent-panel', user_id)
+        # przekierowuje na stronę główną zalogowanego użytkownika
+        return redirect('parent-index')
 
 
 class ChildIndexView(LoginRequiredMixin, View):
@@ -224,7 +224,7 @@ class HealthReviewUpdateView(LoginRequiredMixin, View):
     def post(self, request, child_id, health_rev_id):
         child = Child.objects.get(id=child_id)
         health_rev = ChildHealthReview.objects.get(id=health_rev_id)
-        form = HealthReviewForm(instance=health_rev)
+        form = HealthReviewForm(request.POST, instance=health_rev)
         if not form.is_valid():
             return render(request,
                           'child/child_health_rev_update.html', {

@@ -14,14 +14,23 @@
     {#    </div>#}
 
     <div class="jumbotron py-2 px-4">
-        <h3 class="display-5">Lista dzieci użytkownika {{ parent.first_name }} {{ parent.last_name }}</h3>
-        <p class="lead">Poniżej znajduje się lista dzieci zarejstowanych przez Ciebie w apliakcji.</p>
+        <h3 class="display-5">Lista dzieci zarejestrowanych przez użytkownika {{ parent.first_name }} {{ parent.last_name }}</h3>
         <ul class="lead">
             <p class="small">Kliknij w imię i nazwisko dziecka, aby zobaczyć szczegóły.</p>
             {% for child in children %}
                 <li class="py-2">
                     <a href="/child/{{ child.id }}">{{ child.first_name }} {{ child.last_name }}</a>
-                    , dob: {{ child.date_of_birth }}, age: {{ child.age }} years.
+                    <span>, ur.: {{ child.date_of_birth|date:"Y / m / d " }},
+                    {% if child.age_in_day < 30 %}
+                        wiek w dniach: {{ child.age_in_day }}
+                    {% elif child.age_in_day >= 30 and child.age_in_day <= 365 %}
+                        wiek w miesiącach: {{ child.age_in_month }},
+                    {% else %}
+                        wiek w latach: {{ child.age }},
+                    {% endif %}
+                    {#   pobiera wartość tekstową z listy wyobru (choices)   #}
+                    płeć: {{ child.get_sex_display }}
+                    </span>
                     <a href="/child/update/{{ child.id }}" role="button" class="btn btn-info btn-sm">Edytuj dane</a>
                     <a href="/child/delete/{{ child.id }}" role="button" class="btn btn-danger btn-sm">Usuń dane</a>
                 </li>
@@ -31,7 +40,8 @@
             {% endfor %}
 
         </ul>
-        <hr class="my-4">
-        <a href="/child/create" class="btn btn-success" role="button">Dodaj dziecko</a>
+        <hr class="my-2">
+        <a href="{% url 'parent-index' %}" class="btn btn-lg btn-link" role="button">Strona główna</a>
+        <a href="{% url 'child-create' %}" class="btn btn-success" role="button">Dodaj dziecko</a>
     </div>
 {% endblock %}

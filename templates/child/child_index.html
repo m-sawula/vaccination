@@ -6,24 +6,23 @@
 
     <div class="jumbotron py-2 px-4">
         <h3 class="display-5">Dane dziecka</h3>
-        <p class="lead">Poniżej znajdują się inofrmacje o realizacji bilansu zdrowia dzieca i planu szczepiń
+        <p class="">Poniżej znajdują się inofrmacje o stanie realizacji bilansu zdrowia i planu szczepień
             dziecka.</p>
-        <p class="lead">Wybierz odpowiedni przycisk, aby zobaczyć szczegóły.</p>
         <p class="lead font-weight-bold">{{ child.first_name }} {{ child.last_name }}</p>
 
-        <p> data urodzenia:  {{ child.date_of_birth|date:"Y/m/d " }},
+        <p> data urodzenia: {{ child.date_of_birth|date:"Y / m / d " }},
             {% if child.age_in_day < 30 %}
                 wiek w dniach: {{ child.age_in_day }}
-            {% elif child.age_in_day >= 30 and child.age_in_day <= 365  %}
+            {% elif child.age_in_day >= 30 and child.age_in_day <= 365 %}
                 wiek w miesiącach: {{ child.age_in_month }},
             {% else %}
                 wiek w latach: {{ child.age }},
             {% endif %}
-        {#   pobiera dane z listy wyobru   #}
+            {#   pobiera wartość tekstową z listy wyobru (choices)   #}
             płeć: {{ child.get_sex_display }}
         </p>
         <hr class="my-2">
-        <a class="btn btn-success" href="{% url 'parent-panel' parent %}" role="button">Powrót do listy dzieci</a>
+        <a class="btn-link btn-lg" href="{% url 'parent-panel' parent %}" role="button">Powrót do listy dzieci</a>
     </div>
 
     <div class="jumbotron py-2 px-4">
@@ -36,12 +35,11 @@
         <div id="div-1">
 
             {#   bilans zdrowia   #}
-{#            <p class="font-weight-bold">{{ child_h_rs }}</p>#}
-
-            <ul class="lead">
+            {#            <p class="font-weight-bold">{{ child_h_rs }}</p>#}
+            <ul class="">
                 {% for review in health_rev %}
 
-                    <li class="m-2">
+                    <li class="my-2">
                         {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
                         {% if not review.workup_day %}
                             <a class="text-danger">{{ review.get_name_child_review_display }}</a>
@@ -55,16 +53,21 @@
                             Edytuj dane
                         </a>
                         <br>
-                        wymagana data badania: {{ review.exp_workup_day|date:"Y / m / d" }}<br>
-                        data badania: {{ review.workup_day|date:"Y / m / d" }}<br>
-                        obserwacje i zalecenia: {{ review.remarks }}
+                        <div class="mark m-2">
+                        wymagana data badania:
+                        <span class="font-weight-bold">{{ review.exp_workup_day|date:"Y / m / d" }}</span><br>
+                        data badania:
+                        <span>{{ review.workup_day|date:"Y / m / d" }}</span><br>
+                        obserwacje i zalecenia:
+                        <span>{{ review.remarks }}</span>
+                        </div>
                     </li>
 
                 {% empty %}
-                    {{ "To dziecko nie ma jeszcze dodanych bilansów zdrowia." }}
+                    <span class="font-italic">{{ "To dziecko nie ma jeszcze dodanych bilansów zdrowia." }}</span>
                 {% endfor %}
             </ul>
-            <hr class="my-2">
+{#            <hr class="my-2">#}
         </div>
     </div>
 
@@ -87,16 +90,15 @@
         <div id="div-2">
             {#            <hr class="my-2">#}
             {#    program szczepień    #}
-            <ul class="lead">
-
+            <ul class="">
 
                 {#   cykl szczepień dla gruźlicy   #}
-                <p class="font-weight-bold">{{ vc_gru|first }}</p>
+                <p class="font-weight-bold mark">{{ vc_gru|first }}</p>
 
-                <ul class="lead">
+                <ul class="">
                     {% for item in v_gru %}
 
-                        <li class="m-2">
+                        <li class="">
                             {#   jeśli brak daty szczepienia wyświetla na czerwono    #}
                             {% if not item.vax_date %}
                                 <a class="text-danger">{{ item.name }}</a>
@@ -116,16 +118,16 @@
                         </li>
 
                     {% empty %}
-                        {{ "To dziecko nie ma jeszcze dodanych szczepień." }}
+                       <span class="font-italic">{{ "To dziecko nie ma jeszcze dodanych szczepień." }}</span>
                     {% endfor %}
                 </ul>
                 <hr class="my-2">
 
 
                 {#    cykl szczepień dla wzw    #}
-                <p class="font-weight-bold">{{ vc_wzw|first }}</p>
+                <p class="font-weight-bold mark">{{ vc_wzw|first }}</p>
 
-                <ul class="lead">
+                <ul class="">
                     {% for item in v_wzw %}
 
                         <li class="m-2">
@@ -145,16 +147,16 @@
                         </li>
 
                     {% empty %}
-                        {{ "To dziecko nie ma jeszcze dodanych szczepień." }}
+                       <span class="font-italic">{{ "To dziecko nie ma jeszcze dodanych szczepień." }}</span>
                     {% endfor %}
                 </ul>
                 <hr class="my-2">
 
 
                 {#   cykl szczepień dla dtp   #}
-                <p class="font-weight-bold">{{ vc_dtp|first }}</p>
+                <p class="font-weight-bold mark">{{ vc_dtp|first }}</p>
 
-                <ul class="lead">
+                <ul class="">
                     {% for item in v_dtp %}
 
                         <li class="m-2">
@@ -173,15 +175,15 @@
                         </li>
 
                     {% empty %}
-                        {{ "To dziecko nie ma jeszcze dodanych szczepień." }}
+                       <span class="font-italic">{{ "To dziecko nie ma jeszcze dodanych szczepień." }}</span>
                     {% endfor %}
                 </ul>
                 <hr class="my-2">
 
                 {#   cykl szczepień dla ipv   #}
-                <p class="font-weight-bold">{{ vc_ipv|first }}</p>
+                <p class="font-weight-bold mark">{{ vc_ipv|first }}</p>
 
-                <ul class="lead">
+                <ul class="">
                     {% for item in v_ipv %}
 
                         <li class="m-2">
@@ -200,19 +202,19 @@
                         </li>
 
                     {% empty %}
-                        {{ "To dziecko nie ma jeszcze dodanych szczepień." }}
+                       <span class="font-italic">{{ "To dziecko nie ma jeszcze dodanych szczepień." }}</span>
                     {% endfor %}
                 </ul>
                 <hr class="my-2">
 
                 {#   cykl szczepień dla hib   #}
-                <p class="font-weight-bold">{{ vc_hib|first }}</p>
+                <p class="font-weight-bold mark">{{ vc_hib|first }}</p>
 
                 {#                {% for hib in vc_hib %}#}
                 {#                    <p class="font-weight-bold">{{ hib.name }}</p>#}
                 {#                {% endfor %}#}
 
-                <ul class="lead">
+                <ul class="">
                     {% for item in v_hib %}
 
                         <li class="m-2">
@@ -231,20 +233,20 @@
                         </li>
 
                     {% empty %}
-                        {{ "To dziecko nie ma jeszcze dodanych szczepień." }}
+                       <span class="font-italic">{{ "To dziecko nie ma jeszcze dodanych szczepień." }}</span>
                     {% endfor %}
                 </ul>
                 <hr class="my-2">
 
                 {#   cykl szczepień dla mmr   #}
-                <p class="font-weight-bold">{{ vc_mmr|first }}</p>
+                <p class="font-weight-bold mark">{{ vc_mmr|first }}</p>
 
                 {#                {% for mmr in vc_mmr %}#}
                 {#                    <p class="font-weight-bold">{{ mmr.name }}</p>#}
                 {#                {% endfor %}#}
 
                 {#   szczepienia w cyklu mmr   #}
-                <ul class="lead">
+                <ul class="">
                     {% for item in v_mmr %}
 
                         <li class="m-2">
@@ -263,7 +265,7 @@
                         </li>
 
                     {% empty %}
-                        {{ "To dziecko nie ma jeszcze dodanych szczepień." }}
+                       <span class="font-italic">{{ "To dziecko nie ma jeszcze dodanych szczepień." }}</span>
                     {% endfor %}
                 </ul>
                 <hr class="my-2">

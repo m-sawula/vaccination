@@ -6,7 +6,7 @@ from vax.models import Parent, Child, Vax, ChildHealthReview
 class ParentForm(forms.ModelForm):
     class Meta:
         model = Parent
-        fields = ['first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'email']
 
 
 class ChildForm(forms.ModelForm):

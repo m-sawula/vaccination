@@ -12,11 +12,12 @@ from django.dispatch import receiver
 class Parent(AutoOneToOneModel(User)):
     """Obiekt Parent jest tworzony automatycznie.
 
-    Powstaje podczas rejestracji nowego urzytkownika.
+    Powstaje podczas rejestracji nowego użytkownika.
     Po zalaoganiu neleży zaktualizować dane rodzica.
     """
     first_name = models.CharField(max_length=64, null=True)
     last_name = models.CharField(max_length=64, null=True)
+    email = models.CharField(max_length=64, null=True)
     create_date = models.DateTimeField(auto_now_add=True)
 
 
@@ -58,8 +59,6 @@ class ChildManager(models.Manager):
             ChildHealthReview.objects.create(
                 name_child_review=health_number + 1,
                 exp_workup_day=health_rev_dates,
-                # bezpośrednie przypisanie daty
-                # exp_workup_day=child.date_of_birth + timedelta(days=1),
                 child=child)
 
 
