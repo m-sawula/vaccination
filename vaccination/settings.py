@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%o7f5uk!$b^tyc(7z_n0$@t*p6tx*7#s=g#kx#=9iw(3t!-8b$'
+# SECRET_KEY jest przeniesiony do local_settings.py
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -123,7 +123,7 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = 'parent-index'
 
 try:
-    from vaccination.local_settings import DATABASES
+    from vaccination.local_settings import *
 except ModuleNotFoundError:
     print("Brak konfiguracji bazy danych w pliku local_settings.py!")
     print("Uzupełnij dane i spróbuj ponownie!")
