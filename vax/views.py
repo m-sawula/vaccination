@@ -79,7 +79,7 @@ def signup(request):
             user = authenticate(username=username, password=raw_password)
             login(request, user)
             messages.add_message(request, messages.SUCCESS, 'User created successfully')
-            return redirect('child-index')
+            return redirect('parent-index')
     else:
         form = SignUpForm()
     return render(request, 'auth/signup.html', {'form': form})

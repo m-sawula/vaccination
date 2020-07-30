@@ -14,6 +14,8 @@ class Parent(AutoOneToOneModel(User)):
 
     Powstaje podczas rejestracji nowego użytkownika.
     Po zalaoganiu neleży zaktualizować dane rodzica.
+    Modułu AutoOneToOneModel nie ma w standardzie trzeb go zainstalować
+    pip install django-auto-one-to-one
     """
     first_name = models.CharField(max_length=64, null=True)
     last_name = models.CharField(max_length=64, null=True)
