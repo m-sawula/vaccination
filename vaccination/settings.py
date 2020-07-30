@@ -23,10 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECRET_KEY jest przeniesiony do local_settings.py
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+# DEBUG = True # zostało porzeniesione do local_settings.py
 
+
+# ALLOWED_HOSTS = []
+# # zostało porzeniesione do local_settings.py
 
 # Application definition
 
