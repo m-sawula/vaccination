@@ -24,6 +24,7 @@ The application was created on one's own at the end of the course of Python back
 ## Technologies
 * Python 3.6
 * Django 3.0.8
+* Bootstrap v4.5.0
 * PostgreSQL
 * psycopg2-binary 2.8.5
 * python-dateutil 2.8.1
